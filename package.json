@@ -1,0 +1,48 @@
+{
+  "name": "upsun-docs",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "",
+  "directories": {
+    "doc": "dev/docs"
+  },
+  "scripts": {
+    "install-dev": "npm i -g mint && ./scripts/install-dev.sh",
+    "install:update": "mint update",
+    "cache:generate": "node scripts/sync-readme.js",
+    "cache:clear": "rm -rf snippets/.cache/*",
+    "cache:check:mdx": "node scripts/check-mdx.js snippets/.cache",
+    "cache:all": "npm run cache:clear && npm run cache:generate && npm run cache:check:mdx",
+    "start": "npm run cache:generate && mint dev --verbose --env-file .env",
+    "build": "npm run cache:generate && echo TODO",
+    "lint": "npm run lint",
+    "lint:fix": "echo TODO",
+    "format": "echo TODO",
+    "format:fix": "echo TODO",
+    "check:broken-links": "mint broken-links",
+    "check:a11y": "mint a11y",
+    "check:mdx": "node scripts/check-mdx.js docs",
+    "check:openapi": "mint openapi-check openapi.yaml",
+    "check:all": "npm run check:mdx ; npm run check:openapi ; npm run check:broken-links ; npm run check:a11y",
+    "publish": "mint publish --env-file .env",
+    "migrate:vendor-name": "node scripts/replace-vendor-name.js",
+    "migrate:vendor-urlraw": "node scripts/replace-vendor-urlraw.js",
+    "all": "npm run install:update && npm run cache:generate && npm run lint && npm run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Theosakamg/mintlify-docs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Theosakamg/mintlify-docs/issues"
+  },
+  "homepage": "https://github.com/Theosakamg/mintlify-docs#readme",
+  "devDependencies": {
+    "@mdx-js/mdx": "^3.1.1",
+    "dotenv": "^17.2.3",
+    "mdx": "^0.3.1"
+  }
+}
