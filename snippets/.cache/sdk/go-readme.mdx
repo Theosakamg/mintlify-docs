@@ -1,0 +1,50 @@
+# Upsun SDK Go
+
+Upsun SDK for Go.  
+This SDK maps the Upsun CLI commands. For more information, read [the documentation](https://docs.upsun.com).
+
+## Install
+
+```bash
+go get upsun-sdk-go
+```
+
+## Usage
+
+```Go
+
+import "github.com/upsun/upsun-sdk-go";
+
+config := NewUpsunConfig(nil)
+upsun := NewUpsunClient(*config)
+
+orgs := upsun.organization.List()
+prjs := upsun.project.list("name=MyOrganizationName");
+result := upsun.environment.redeploy("MyProjectId", "main");
+```
+
+## Devel
+
+Clone repository:
+```bash
+git clone git@github.com:upsun/upsun-sdk-go.git
+```
+
+Install Dep:
+```bash
+go install
+```
+
+Generate API Client (Low-level) base on OpenAPI spec.
+```bash
+./scripts/gen_golang.sh
+```
+
+Build the stack:
+```bash
+go build .
+```
+
+
+
+

@@ -1,0 +1,306 @@
+# Plugin-App Starter for Upsun Console
+
+A simple skeleton/starter template for developing Plugin-Apps for the Upsun console. This project provides a foundation to quickly bootstrap your custom plugin development with best practices and essential configuration.
+
+## 🔌 What are Plugin-Apps?
+
+**Plugin-Apps** are **third-party applications** that extend the functionality of the **Upsun console** by adding custom features and integrations.  
+
+These applications run in a **secure sandboxed** environment to ensure they don't interfere with the console's core functionality.  
+Communication between the console and Plugin-Apps is managed through a **structured communication bus** that handles property exchanges and various events.
+
+Plugin-Apps can be built using different technologies than the console itself - they have been successfully tested with `React`, `Vue.js`, and other modern frameworks, giving developers the flexibility to use their preferred tools and technologies.
+
+## 🚀 Overview
+
+This starter kit includes:
+- Basic project structure for Upsun Plugin-Apps
+- Development environment setup
+- Build and deployment configuration
+- Marketplace publishing guidelines
+- Example code and documentation
+
+## 📋 Prerequisites
+
+Before you begin, ensure you have the following installed:
+- Node.js (version 16 or higher)
+- npm package manager
+- Git
+- [Upsun CLI tools](https://docs.upsun.com/administration/cli.html)
+- Access to [Upsun console](https://console.upsun.com/)
+
+## 🛠️ Getting Started for Development
+
+### 1. Clone and Setup
+
+```bash
+# Clone this starter template
+git clone https://github.com/upsun/pluginapp-starter.git my-plugin-app
+cd my-plugin-app
+
+# Install dependencies
+npm install
+```
+
+### 2. Development Environment
+
+```bash
+# Start development server
+npm run serve
+
+# The plugin will be available at http://localhost:8080
+# with hot-reload enabled for rapid development
+```
+
+### 3. Manifest Validation
+
+This starter kit includes JSON Schema validation for the `manifest.json` file:
+
+```bash
+# Install validation dependencies
+npm install
+
+# Validate your manifest.json
+npm run validate
+```
+
+The `manifest.schema.json` file provides:
+- **Automatic validation** in VS Code and other schema-aware editors
+- **IntelliSense** with auto-completion and documentation
+- **Error detection** for invalid configurations
+- **SchemaStore.org compatibility** for automatic schema detection
+
+#### Manifest Structure
+Your `manifest.json` must include:
+- Plugin metadata (id, name, version, description, author)
+- Hosting configuration (_self, url, format, type)
+- Integration hooks (where your plugin appears in the console)
+- Permissions (what console features your plugin can access)
+
+See the [Schema Documentation](./docs/SCHEMA_README.md) for detailed information.
+
+### 4. Project Structure
+
+```
+pluginapp-starter/
+├── src/                   # Source code
+│   └── index.js           # Main entry point
+├── docs/                  # Documentations
+├── public/                # Static assets
+├── package.json           # Dependencies and scripts
+├── manifest.json          # Plugin manifest for Upsun
+└── README.md              # This file
+```
+
+### 5. Configuration
+
+Update the `manifest.json` file with your plugin details:
+
+```json
+{
+  "id": "<unique_id (use project_id)>",
+  "name": "your-plugin-name",
+  "version": "1.0.0",
+  "description": "Your plugin description",
+  "author": "Your Name",
+  "icon": "icon.svg",
+  "screenshots": [
+    "resources/main.png",
+    "resources/settings.png"
+  ]
+
+  "_self": "http://<url_of_hosted_project>/manifest.json",
+  "url": "http://<url_of_hosted_project>",
+  "format": "amd",
+  "type": "iframe",
+ 
+  "permissions": {
+    "subscriptions": [],
+    "publishers": ["PLUGIN_TOPIC_RESIZE_IFRAME"],
+    "clients": ["PLUGIN_SRV_PROPS"],
+    "services": []
+  },
+
+  "hooks": [
+    {
+      "name": "environment",
+      "route": "/:organizationId/:projectId/:environmentId/",
+      "type": "tab",
+      "title": "display name on tab"
+    }
+  ],
+}
+```
+
+**📖 Configuration Guides:**
+- [**Permissions Guide**](docs/PERMISSIONS_GUIDE.md) - Learn how to configure permissions in your manifest.json to control access to platform resources and services
+- [**Hooks Guide**](docs/HOOKS_GUIDE.md) - Understand how to set up hooks to integrate your plugin into different parts of the Upsun console
+
+### 6. Development Commands
+
+```bash
+# Development server with hot reload
+npm run serve
+
+# Run tests
+npm test
+
+# Lint code
+npm run lint
+
+# Format code
+npm run format
+
+# Type checking (if using TypeScript)
+npm run type-check
+```
+
+## 🏗️ Preparing for Production
+
+### 1. Build Process
+
+```bash
+# Create production build
+npm run build
+
+# This will generate optimized files in the 'dist' directory
+```
+
+### 2. Testing
+
+```bash
+# Run all tests
+npm run test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run end-to-end tests
+npm run test:e2e
+```
+
+### 3. Validation
+
+```bash
+# Validate plugin manifest
+npm run validate
+
+# Check for security vulnerabilities
+npm audit
+
+# Lint and format check
+npm run lint:check
+npm run format:check
+```
+
+### 4. Performance Optimization
+
+- Ensure bundle size is optimized
+- Minimize external dependencies
+- Implement lazy loading where appropriate
+- Test plugin performance in different scenarios
+
+### 5. Security Checklist
+
+- [ ] Remove any hardcoded secrets or API keys
+- [ ] Validate all user inputs
+- [ ] Implement proper error handling
+- [ ] Follow Upsun security guidelines
+- [ ] Test with different permission levels
+
+## 📦 Publishing on Marketplace
+
+### 1. Prepare for Submission
+
+```bash
+# Create final production build
+npm run build:production
+
+# Generate plugin package
+npm run package
+
+# This creates a distributable plugin file
+```
+
+### 2. Marketplace Requirements
+
+Ensure your plugin meets these requirements:
+
+#### Mandatory Files
+- `manifest.json` - Plugin metadata and configuration
+- `dist/` - Built plugin files
+- `README.md` - Plugin documentation
+- `LICENSE` - License file
+- `CHANGELOG.md` - Version history
+
+#### Plugin Manifest Requirements
+Update the manifest with production URL.
+```json
+{
+  ...
+  "_self": "http://<url_of_hosted_project>/manifest.json",
+  "url": "http://<url_of_hosted_project>",
+  ...
+}
+```
+
+### 3. Submission Process
+
+1. **Create Plugin Package**
+   ```bash
+   npm run package
+   ```
+
+2. **Test in Staging**
+   - Deploy to Upsun staging environment
+   - Test all functionality
+   - Verify permissions work correctly
+
+3. **Submit to Marketplace**
+   - Log into Upsun Console
+   - Navigate to Plugin Marketplace
+   - Click "Submit Plugin"
+   - Upload your plugin package
+   - Fill out submission form
+
+4. **Review Process**
+   - Upsun team reviews your plugin
+   - Address any feedback or issues
+   - Plugin gets approved and published
+
+### 4. Post-Publication
+
+- Monitor plugin performance and user feedback
+- Respond to user issues and questions
+- Plan and implement updates
+- Maintain compatibility with Upsun updates
+
+
+## 📚 Documentation
+
+### Official Documentation
+- [Upsun Plugin Development Guide](https://docs.upsun.com/plugins/)
+
+### Advanced Guides
+- [**SDK Guide**](docs/SDK_GUIDE.md) - Detailed guide on using the Plugin SDK for advanced functionality and API interactions
+
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass
+6. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the Apache License, Version 2.0 - see the [LICENSE](LICENSE) file for details.
+
+
+---
+
+**Happy Plugin Development! 🎉**
+
+For more information, visit the [Upsun Documentation](https://docs.upsun.com/) or reach out to the community for support.

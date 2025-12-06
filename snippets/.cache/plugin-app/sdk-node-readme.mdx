@@ -1,0 +1,126 @@
+# PluginApp SDK Node
+
+**SDK for PluginApp integration into the Upsun console.**
+
+This library enables seamless communication between plugins and the Upsun console (parent iframe), supporting all major JavaScript environments: Node.js, ESM, TypeScript, and direct browser usage.
+
+---
+
+## What is this library?
+
+`pluginapp-sdk-node` is an open-source SDK designed to help developers build plugins that integrate with the Upsun console. It provides a unified API for message passing, iframe resizing, and service communication between your plugin and the Upsun platform.
+
+---
+
+## Installation
+
+```bash
+npm install pluginapp-sdk-node
+```
+
+---
+
+## Usage Scenarios
+
+### 1. Node.js (CommonJS)
+
+```js
+const { PluginSDK, getPluginSDK, PLUGIN_TOPIC_RESIZE_IFRAME } = require('pluginapp-sdk-node');
+const sdk = getPluginSDK();
+sdk.createPublisher(PLUGIN_TOPIC_RESIZE_IFRAME).publish({ height: 500 });
+```
+
+### 2. ESM / TypeScript (modern JS, Vite, Webpack, etc.)
+
+```ts
+import { PluginSDK, getPluginSDK, PLUGIN_TOPIC_RESIZE_IFRAME } from 'pluginapp-sdk-node';
+const sdk = getPluginSDK();
+sdk.createPublisher(PLUGIN_TOPIC_RESIZE_IFRAME).publish({ height: 500 });
+```
+
+### 3. Direct Browser Usage (UMD/IIFE)
+
+Copy the file `dist/pluginapp-sdk.umd.js` or `dist/pluginapp-sdk.iife.js` into your web project and include it in your HTML:
+
+```html
+
+<script src="pluginapp-sdk.umd.js"></script>
+<script>
+  // Access via global PluginAppSDK
+  const sdk = PluginAppSDK.getPluginSDK();
+  sdk.createPublisher(PluginAppSDK.PLUGIN_TOPIC_RESIZE_IFRAME).publish({ height: 500 });
+</script>
+
+
+<script src="pluginapp-sdk.iife.js"></script>
+<script>
+  const sdk = PluginAppSDK.getPluginSDK();
+  // ...
+</script>
+```
+
+**Browser usage notes:**
+- No build step required, just include the file.
+- All exports are available under the `PluginAppSDK` global variable.
+- For production, you may want to minify the bundle.
+
+---
+
+## API Overview
+
+- `PluginSDK`: Main class to manage publishers, subscriptions, clients, and services.
+- `getPluginSDK()`: Singleton, retrieves the SDK instance.
+- `usePluginSDK()`: Vue composable (optional).
+- `Publisher`: Publish messages to the parent.
+- `Subscription`: Subscribe to messages from the parent.
+- `Client`: Asynchronous communication with services.
+- `Service`: Base class for custom services.
+
+---
+
+## Build & Publish
+
+- `npm run build`: Generates CommonJS, ESM, UMD, IIFE, and type definitions.
+- `npm publish`: Publishes to npm (requires an npm account).
+
+---
+
+## TypeScript Support
+
+Type definitions are generated automatically and included for all usage scenarios.
+
+---
+
+## Contributing
+
+Contributions are welcome! To contribute:
+
+1. Fork this repository
+2. Create a new branch (`git checkout -b my-feature`)
+3. Make your changes and add tests if needed
+4. Run `npm run build` to ensure everything compiles
+5. Submit a pull request
+
+Please read and respect the [Apache 2.0 License](LICENSE).
+
+---
+
+## FAQ
+
+**Q: Which file should I use?**
+
+- **Node.js**: Use the package directly (auto-detects CJS/ESM).
+- **Modern JS/TS (Vite/Webpack/ESM)**: Use the package directly with `import`.
+- **Browser (no build tool)**: Use `pluginapp-sdk.umd.js` or `pluginapp-sdk.iife.js` with a `<script>` tag.
+
+**Q: Can I use this in a legacy browser?**
+
+- The UMD/IIFE bundles are compatible with most modern browsers. For legacy support, consider transpiling further.
+
+---
+
+## License
+
+Copyright 2025 Platform.sh
+
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE).
