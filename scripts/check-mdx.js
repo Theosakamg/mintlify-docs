@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { compile } from "@mdx-js/mdx";
 
-const targetPath = process.argv[2] || "docs";
+const targetPath = process.argv[2] || "contents";
 const resolvedPath = path.resolve(process.cwd(), targetPath);
 
 let totalFiles = 0;

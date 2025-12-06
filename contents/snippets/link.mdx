@@ -1,0 +1,8 @@
+import { ConfigValue } from '@mintlify/components';
+
+export default function LinkFromConfig( {key, title}) {
+  const link = ConfigValue(key);
+  let value = `<a href=${link}>${title}</a>`;
+
+  return value;
+}

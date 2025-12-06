@@ -1,0 +1,413 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Upsun",
+  "colors": {
+    "primary": "#6046ff",
+    "light": "#6046ff",
+    "dark": "#6046ff"
+  },
+  "icons": {
+    "library": "lucide"
+  },
+  "favicon": "/favicon.png",
+  "appearance": {
+    "default": "light"
+  },
+  "background": {
+    "color": {
+      "light": "#f7f9f8"
+    }
+  },
+  "fonts": {
+    "heading": {
+      "family": "abcFavorit"
+    },
+    "body": {
+      "family": "abcFavorit",
+      "weight": 400
+    }
+  },
+  "api": {
+    "examples": {
+      "prefill": true
+    }
+  },
+  "metadata": {
+    "timestamp": true
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Home",
+        "icon": "house",
+        "pages": [
+          "index"
+        ]
+      },
+      {
+        "tab": "Documentation",
+        "icon": "book-open",
+        "groups": [
+          {
+            "group": "Get started",
+            "icon": "rocket",
+            "pages": [
+              {
+                "group": "Introduction",
+                "pages": [
+                  "docs/docs",
+                  "docs/get-started/here",
+                  "docs/get-started/here/setup",
+                  "docs/get-started/here/create-project",
+                  {
+                    "group": "Configure your project",
+                    "pages": [
+                      "docs/get-started/here/configure",
+                      "docs/get-started/here/configure/python"
+                    ]
+                  },
+                  "docs/get-started/here/set-resources",
+                  "docs/get-started/here/third-party"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "CLI",
+        "icon": "square-terminal",
+        "groups": [
+          {
+            "group": "Reference",
+            "icon": "code",
+            "pages": [
+              {
+                "group": "Configure Apps",
+                "pages": [
+                  "docs/create-apps",
+                  "docs/create-apps/troubleshoot-mounts"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "icon": "cloud",
+        "groups": [
+          {
+            "group": "API Reference",
+            "pages": [
+              "api/rest/overview",
+              "api/rest/authentication",
+              "api/rest/errors",
+              "api/rest/rate-limits",
+              "api/rest/endpoints",
+              {
+                "group": "SDK",
+                "icon": "package",
+                "pages": [
+                  "api/sdk/overview",
+                  "api/sdk/php",
+                  "api/sdk/js",
+                  "api/sdk/python",
+                  "api/sdk/go"
+                ]
+              },
+              {
+                "group": "Resources",
+                "icon": "database",
+                "expanded": true,
+                "pages": [
+                  {
+                    "group": "Meta",
+                    "tag": "New",
+                    "icon": "notebook-tabs",
+                    "public": false,
+                    "hidden": false,
+                    "pages": [
+                      "api/resources/meta/overview",
+                      "api/resources/meta/explorer",
+                      {
+                        "group": "REST API",
+                        "openapi": {
+                          "source": "snippets/.cache/openapi/meta-openapi.json",
+                          "directory": "api/rest"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "group": "Plugin-App",
+                    "tag": "Beta",
+                    "icon": "unplug",
+                    "public": false,
+                    "hidden": false,
+                    "pages": [
+                      "api/resources/plugin-app/overview",
+                      "api/resources/plugin-app/starter-kit",
+                      "api/resources/plugin-app/sdk-node"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "group": "REST API",
+            "pages": [
+              "api/introduction",
+              {
+                "group": "OpenAPI Specification",
+                "icon": "chevrons-left-right-ellipsis",
+                "openapi": {
+                  "source": "openapi.json",
+                  "directory": "api/rest"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Articles",
+        "icon": "newspaper",
+        "groups":[
+          {
+            "group": "Articles",
+            "pages": [
+              "articles/latest",
+              "articles",
+              "articles/ai"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "AI",
+        "icon": "brain",
+        "groups": [
+           {
+            "group": "AI",
+            "icon": "brain",
+            "pages": [
+              {
+                "group": "MCP",
+                "pages": [
+                  "ai/mcp/overview",
+                  {
+                    "group": "Integrations",
+                    "pages": [
+                      "ai/mcp/integrations/cursor",
+                      "ai/mcp/integrations/vscode",
+                      "ai/mcp/integrations/all"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Onboarding",
+                "pages": [
+                  "ai/onboarding/overview",
+                  "ai/onboarding/setup",
+                  "ai/onboarding/best-practices"
+                ]
+              },
+              {
+                "group": "Docs",
+                "pages": [
+                  "ai/articles/latest",
+                  "ai/articles/all"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Status",
+        "icon": "signal",
+        "pages": [
+          "status"
+        ]
+      },
+      {
+        "tab": "Changelog",
+        "icon": "megaphone",
+        "pages": [
+          "changelog"
+        ]
+      }
+    ],
+    "global": {
+        "languages": [
+          {
+            "language": "en",
+            "default": true,
+            "hidden": true,
+            "href": "https://devcenter.upsun.com/en/"
+          },
+          {
+            "language": "fr",
+            "hidden": true,
+            "href": "https://devcenter.upsun.com/fr/"
+          }
+        ],
+        "versions": [
+          {
+            "version": "1.0.0",
+            "default": true,
+            "hidden": true,
+            "href": "https://devcenter.upsun.com/"
+          },
+          {
+            "version": "1.1.0",
+            "hidden": true,
+            "href": "https://devcenter.upsun.com/v/1.1.0/"
+          }
+        ],
+        "anchors": [
+        {
+          "anchor": "Community",
+          "href": "https://discord.gg/upsun",
+          "icon": "discord"
+        },
+        {
+          "anchor": "Blog",
+          "href": "https://upsun.com/blog/",
+          "icon": "newspaper"
+        },
+        {
+          "anchor": "Events",
+          "href": "https://upsun.com/events/",
+          "icon": "calendar"
+        }
+      ]
+    }
+  },
+  "description": "Upsun Documentation, Dev Center, news, and more.",
+  "banner": {
+    "content": "⚠️ Scheduled maintenance: API will be unavailable December 15, 2-4 AM UTC",
+    "dismissible": false
+  },
+  "logo": {
+    "light": "/logo/devcenter_light.svg",
+    "dark": "/logo/devcenter_dark.svg",
+    "href": "https://devcenter.upsun.com/"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Login",
+        "href": "https://auth.upsun.com/?_gl=1*a20w89*_gcl_au*NzUxMjA5ODE0LjE3NTk4NDAyNDE."
+      },
+      {
+        "label": "Watch a demo",
+        "href": "https://upsun.com/demo/"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Free trial",
+      "href": "https://auth.upsun.com/register?_gl=1*1b37zyj*_gcl_au*NzUxMjA5ODE0LjE3NTk4NDAyNDE."
+    }
+  },
+  "contextual": {
+    "options": [
+     "copy",
+     "view",
+     "chatgpt",
+     "claude",
+     "perplexity",
+     "mcp",
+     "cursor",
+     "vscode"
+   ]
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/upsun",
+      "youtube": "https://www.youtube.com/@upsundotcom",
+      "x": "https://x.com/upsundotcom",
+      "linkedin": "https://www.linkedin.com/company/upsundotcom"
+    },
+    "links": [
+      {
+        "header": "Solutions",
+        "items": [
+          {
+            "label": "Flexible",
+            "href": "https://devcenter.upsun.com/"
+          }
+        ]
+      },
+      {
+        "header": "Support",
+        "items": [
+          {
+            "label": "Documentation",
+            "href": "https://devcenter.upsun.com/docs"
+          },
+          {
+            "label": "Contact",
+            "href": "https://www.upsun.com/contact"
+          },
+          {
+            "label": "FAQ",
+            "href": "https://devcenter.upsun.com/docs/introduction/faq"
+          },
+           {
+            "label": "Roadmap",
+            "href": "https://devcenter.upsun.com/"
+          },
+           {
+            "label": "Status",
+            "href": "https://devcenter.upsun.com/status"
+          }
+        ]
+      },
+      {
+        "header": "Company",
+        "items": [
+          {
+            "label": "Blog",
+            "href": "https://blog.upsun.com/"
+          },
+          {
+            "label": "Jobs",
+            "href": "https://www.upsun.com/careers"
+          }
+        ]
+      },
+      {
+        "header": "Legal",
+        "items": [
+          {
+            "label": "Privacy",
+            "href": "https://devcenter.upsun.com/"
+          },
+          {
+            "label": "Terms",
+            "href": "https://devcenter.upsun.com/"
+          }
+        ]
+      }
+    ]
+  },
+  "integrations": {
+    "ga4": {
+      "measurementId": "G-XXXXXXXXXX"
+    },
+    "telemetry": {
+      "enabled": true
+    }
+  },
+  "seo": {
+    "metatags": {
+      "robots": "noindex"
+    }
+  }
+}

@@ -1,0 +1,43 @@
+/* Space Grotesk font for spans with data-as="p" */
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('https://fonts.gstatic.com/s/spacegrotesk/v22/V8mDoQDjQSkFtoMM3T6r8E7mPbF4C_k3HqU.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Apply Space Grotesk font to hero section buttons */
+.hero-get-started-btn {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+}
+
+.hero-what-is-upsun-btn {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+}
+
+/* Apply Space Grotesk font to specification and resources buttons */
+.specification-btn {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+}
+
+.resources-btn {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+}
+
+.link.nav-tabs-item.group {
+  font-weight: 400;
+}
+
+#sidebar-title {
+  font-weight: 600;
+  color: black;
+}
+
+body {
+  color: rgb(95, 114, 121);
+}

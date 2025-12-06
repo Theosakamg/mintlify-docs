@@ -12,8 +12,8 @@ const __dirname = path.dirname(__filename);
 // Load environment variables from .env file
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
-const CACHE_DIR = path.join(__dirname, "../snippets/.cache");
-const FALLBACK_CONTENT_PATH = path.join(__dirname, "../snippets/common/notContent.mdx");
+const CACHE_DIR = path.join(__dirname, "../contents/snippets/.cache");
+const FALLBACK_CONTENT_PATH = path.join(__dirname, "../contents/snippets/common/notContent.mdx");
 
 // GitHub Personal Access Token (from environment variable)
 // Create one at: https://github.com/settings/tokens
