@@ -1,0 +1,21 @@
+# Firewall configuration for Mint
+
+# Ignore(exclude) all files by default
+# ** # (Don't full work, can be include all sub-folders with "!" rule)
+dev/**
+node_modules/**
+scripts/**
+.github/**
+README.md
+.env*
+
+# Include important documentation files
+!.mintignore
+!quickstart.mdx
+!openapi.yaml
+!index.mdx
+!changelog.mdx
+!get-started/here.mdx
+!get-started/here/**
+!create-apps.mdx
+!create-apps/**
