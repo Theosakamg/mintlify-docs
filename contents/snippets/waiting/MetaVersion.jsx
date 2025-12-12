@@ -1,10 +1,10 @@
-export const MetaVersion = ({language}) => {
+const MetaVersion = ({language}) => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
     if (!language) return;
 
-    const url = `https://master-7rqtwti-b3ghjlg3f5nug.eu-5.platformsh.site/image/${language}?items=versions,supported`;
+    const url = `https://meta.upsun.com/image/${language}?items=versions,supported`;
 
     fetch(url)
       .then((r) => r.json())
@@ -23,3 +23,5 @@ export const MetaVersion = ({language}) => {
     </p>
   );
 };
+
+export default MetaVersion;

@@ -183,6 +183,12 @@
               "articles",
               "articles/ai"
             ]
+          },
+          {
+            "group": "Categories",
+            "pages": [
+              "articles/discussions"
+            ]
           }
         ]
       },
@@ -243,32 +249,6 @@
       }
     ],
     "global": {
-        "languages": [
-          {
-            "language": "en",
-            "default": true,
-            "hidden": true,
-            "href": "https://devcenter.upsun.com/en/"
-          },
-          {
-            "language": "fr",
-            "hidden": true,
-            "href": "https://devcenter.upsun.com/fr/"
-          }
-        ],
-        "versions": [
-          {
-            "version": "1.0.0",
-            "default": true,
-            "hidden": true,
-            "href": "https://devcenter.upsun.com/"
-          },
-          {
-            "version": "1.1.0",
-            "hidden": true,
-            "href": "https://devcenter.upsun.com/v/1.1.0/"
-          }
-        ],
         "anchors": [
         {
           "anchor": "Community",
