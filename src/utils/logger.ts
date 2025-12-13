@@ -1,4 +1,5 @@
 import pino, {type Logger as PinoLogger} from 'pino';
+import pinoPretty from 'pino-pretty';
 
 import config from '../config/config.js';
 
@@ -68,6 +69,10 @@ class Logger {
    * Logger context/name
    */
   private context: string;
+  /**
+   * Destination stream (for proper cleanup)
+   */
+  private destination: any;
 
   /**
    * Public constructor
@@ -81,18 +86,45 @@ class Logger {
 
     this.context = context;
 
-    // Use synchronous stdout destination to ensure chronological ordering
-    const destination = pino.destination({
-      dest: 1, // stdout
-      sync: true,
-    });
+    // Load configuration
+    let configLogger;
+    try {
+      configLogger = config.logger;
+    } catch {
+      configLogger = {
+        level: 'info' as LogLevel,
+        prettyPrint: true,
+        enableEmojis: true,
+      };
+    }
+
+    const prettyPrint = options.prettyPrint === undefined ? configLogger.prettyPrint : options.prettyPrint;
+    const enableEmojis = options.enableEmojis === undefined ? configLogger.enableEmojis : options.enableEmojis;
+
+    // Use pino-pretty stream directly (not as transport) to avoid worker thread
+    if (prettyPrint) {
+      this.destination = pinoPretty({
+        colorize: true,
+        translateTime: 'SYS:standard',
+        ignore: 'pid,hostname,levelLabel,levelEmoji,emoji,context',
+        messageFormat: enableEmojis ? '{levelEmoji} [{context}] {msg}' : '[{context}] {msg}',
+        customColors: 'info:blue,warn:yellow,error:red,debug:gray',
+        singleLine: true,
+        sync: true,
+      });
+    } else {
+      this.destination = pino.destination({
+        dest: 1, // stdout
+        sync: true,
+      });
+    }
 
     this.pinoLogger = pino(
       {
         ...Logger.pinoConfig,
         base: {context},
       },
-      destination,
+      this.destination,
     );
   }
 
@@ -123,20 +155,8 @@ class Logger {
 
     Logger.pinoConfig = {
       level,
-      ...(prettyPrint && {
-        transport: {
-          target: 'pino-pretty',
-          options: {
-            colorize: true,
-            translateTime: 'SYS:standard',
-            ignore: 'pid,hostname,levelLabel,levelEmoji,emoji,context',
-            messageFormat: enableEmojis ? '{levelEmoji} [{context}] {msg}' : '[{context}] {msg}',
-            customColors: 'info:blue,warn:yellow,error:red,debug:gray',
-            singleLine: true,
-            sync: true,
-          },
-        },
-      }),
+      // Don't use transport to avoid worker thread issues
+      // Pretty printing will be handled by the destination
       formatters: prettyPrint
         ? {
           level: (label: string) => ({
@@ -323,6 +343,22 @@ class Logger {
    */
   static getEventEmojis(): typeof EVENT_EMOJIS {
     return {...EVENT_EMOJIS};
+  }
+
+  /**
+   * Flush and close the logger
+   * Ensures all pending logs are written and closes the transport
+   */
+  async flush(): Promise<void> {
+    return new Promise<void>((resolve) => {
+      this.pinoLogger.flush(() => {
+        // Close the destination stream if it has a close method
+        if (this.destination && typeof this.destination.flushSync === 'function') {
+          this.destination.flushSync();
+        }
+        resolve();
+      });
+    });
   }
 }
 

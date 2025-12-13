@@ -70,6 +70,11 @@ export default class SyncReadme extends UpsunDocCommand {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       this.error(`Synchronization failed: ${message}`, {exit: 1});
+    } finally {
+      // Ensure logger is flushed before exit
+      if (this.logger) {
+        await this.logger.flush();
+      }
     }
   }
 

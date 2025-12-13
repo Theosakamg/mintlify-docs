@@ -148,6 +148,9 @@ class DownloadGithub {
             redirectCount: redirectCount + 1,
           });
 
+          // Consume the response to close the connection properly
+          res.resume();
+
           this._downloadRecursive(redirectUrl, token, isPrivate, maxRedirects, redirectCount + 1, timeout)
           .then(resolve)
           .catch(reject);
@@ -156,6 +159,8 @@ class DownloadGithub {
 
         // Handle errors
         if (res.statusCode !== 200) {
+          // Consume the response to close the connection properly
+          res.resume();
           reject(new Error(`HTTP ${res.statusCode}: ${res.statusMessage} for ${url}`));
           return;
         }
@@ -188,6 +193,9 @@ class DownloadGithub {
         request.destroy();
         reject(new Error(`Request timeout after ${timeout}ms`));
       });
+
+      // Explicitly end the request
+      request.end();
     });
   }
 
