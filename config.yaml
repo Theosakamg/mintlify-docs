@@ -41,9 +41,9 @@ sync:
       output: sdk/js-readme.mdx
       private: true
 
-    - url: https://raw.githubusercontent.com/upsun/upsun-sdk-python/main/README.md
-      output: sdk/python-readme.mdx
-      private: true
+    # - url: https://raw.githubusercontent.com/upsun/upsun-sdk-python/main/README.md
+    #   output: sdk/python-readme.mdx
+    #   private: true
 
     - url: https://raw.githubusercontent.com/upsun/upsun-sdk-go/main/README.md
       output: sdk/go-readme.mdx
@@ -56,6 +56,78 @@ sync:
     - url: https://raw.githubusercontent.com/upsun/pluginapp-sdk-node/main/README.md
       output: plugin-app/sdk-node-readme.mdx
       private: true
+
+# Check Configuration
+check:
+  # Valid header fields for MDX/MD files
+  validHeaderFields:
+    - title
+    - description
+    - icon
+    - sidebarTitle
+    - mode
+    - date
+    - tag
+    - author
+    - image
+    - category
+    - published
+    - draft
+    - keywords
+    - rss
+    - og:title
+    - og:description
+    - og:image
+    - twitter:card
+    - twitter:title
+    - twitter:description
+    - twitter:image
+
+  # Category configurations for header validation
+  categories:
+    - name: articles
+      pathPattern: ^articles/
+      requiredFields:
+        - title
+        - date
+      optionalFields:
+        - description
+        - tag
+        - author
+
+    - name: api
+      pathPattern: ^api/
+      requiredFields:
+        - title
+      optionalFields:
+        - description
+        - icon
+
+    - name: ai
+      pathPattern: ^ai/
+      requiredFields:
+        - title
+      optionalFields:
+        - description
+        - icon
+        - sidebarTitle
+
+    - name: docs
+      pathPattern: ^docs/
+      requiredFields:
+        - title
+      optionalFields:
+        - description
+        - icon
+        - sidebarTitle
+
+    - name: root
+      pathPattern: ^[^/]+\.mdx?$
+      requiredFields:
+        - title
+      optionalFields:
+        - description
+        - icon
 
 # Example: API Configuration
 # api:

@@ -27,6 +27,7 @@ interface Config {
   app: AppConfig;
   github: GithubConfig;
   sync: SyncConfig;
+  check: CheckConfig;
 }
 ```
 
@@ -75,6 +76,22 @@ interface SyncSource {
 }
 ```
 
+### Check Configuration
+
+```typescript
+interface CheckConfig {
+  validHeaderFields: string[];
+  categories: CheckCategory[];
+}
+
+interface CheckCategory {
+  name: string;
+  pathPattern: string;  // Regex pattern as string
+  requiredFields: string[];
+  optionalFields: string[];
+}
+```
+
 ## Usage
 
 ### Basic TypeScript Usage
@@ -94,6 +111,10 @@ const token = config.github.token;
 // Access sync configuration
 const cacheDir = config.sync.cacheDir;
 const sources = config.sync.sources;
+
+// Access check configuration
+const validFields = config.check.validHeaderFields;
+const categories = config.check.categories;
 ```
 
 ### Advanced Usage with Raw Config Manager
@@ -164,6 +185,34 @@ sync:
     - url: https://api.example.com/data.json
       output: api/data.json
       private: true
+
+# Check Configuration
+check:
+  validHeaderFields:
+    - title
+    - description
+    - icon
+    - date
+    - tag
+    - rss
+
+  categories:
+    - name: articles
+      pathPattern: ^articles/
+      requiredFields:
+        - title
+        - date
+      optionalFields:
+        - description
+        - tag
+
+    - name: api
+      pathPattern: ^api/
+      requiredFields:
+        - title
+      optionalFields:
+        - description
+        - icon
 ```
 
 ## Environment Variables
@@ -233,7 +282,32 @@ export default class SyncReadme extends UpsunDocCommand {
 }
 ```
 
-## API Reference
+### Example: Check Header Command
+
+```typescript
+import config from '../../config/config.js';
+
+export default class CheckHeader extends UpsunDocCommand {
+  public async run(): Promise<void> {
+    // Get check configuration
+    const checkConfig = config.check;
+    const validFields = new Set(checkConfig.validHeaderFields);
+
+    // Compile regex patterns from config
+    const categories = checkConfig.categories.map((cat) => ({
+      ...cat,
+      pathPattern: new RegExp(cat.pathPattern),
+    }));
+
+    // Use configuration for validation
+    for (const field of Object.keys(frontmatter)) {
+      if (!validFields.has(field)) {
+        warnings.push(`Unknown field: ${field}`);
+      }
+    }
+  }
+}
+```## API Reference
 
 ### ConfigManager Methods
 

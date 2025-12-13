@@ -5,47 +5,19 @@ import {Args, Flags} from '@oclif/core';
 
 import UpsunDocCommand from '../../base-command.js';
 import {globalExamples} from '../../config.js';
+import config from '../../config/config.js';
 import initHookApp from '../../hooks/init/app.js';
 import Logger from '../../utils/logger.js';
 
-const CONTENT_PATH = 'contents';
-
 /**
- * Valid header fields dictionary
+ * Internal category with compiled regex pattern
  */
-const VALID_HEADER_FIELDS = new Set([
-  'title',
-  'description',
-  'icon',
-  'sidebarTitle',
-  'mode',
-  'date',
-  'tag',
-  'author',
-  'image',
-  'category',
-  'published',
-  'draft',
-  'keywords',
-  'og:title',
-  'og:description',
-  'og:image',
-  'twitter:card',
-  'twitter:title',
-  'twitter:description',
-  'twitter:image',
-]);
-
-/**
- * Category configuration
- */
-const CATEGORIES = [
-  {name: 'articles', pathPattern: /^articles\//, requiredFields: ['title', 'date'], optionalFields: ['description', 'tag', 'author']},
-  {name: 'api', pathPattern: /^api\//, requiredFields: ['title'], optionalFields: ['description', 'icon']},
-  {name: 'ai', pathPattern: /^ai\//, requiredFields: ['title'], optionalFields: ['description', 'icon', 'sidebarTitle']},
-  {name: 'docs', pathPattern: /^docs\//, requiredFields: ['title'], optionalFields: ['description', 'icon', 'sidebarTitle']},
-  {name: 'root', pathPattern: /^[^/]+\.mdx?$/, requiredFields: ['title'], optionalFields: ['description', 'icon']},
-];
+interface CategoryWithRegex {
+  name: string;
+  pathPattern: RegExp;
+  requiredFields: string[];
+  optionalFields: string[];
+}
 
 /**
  * File validation result
@@ -88,7 +60,7 @@ interface ValidationSummary {
 
 export default class CheckHeader extends UpsunDocCommand {
   static override args = {
-    path: Args.string({default: CONTENT_PATH, description: 'Path to check (default: contents/)'}),
+    path: Args.string({default: config.app.folder, description: 'Path to check (default: contents/)'}),
   };
 
   static override description = 'Check headers (frontmatter) in Markdown/MDX files for validity and consistency';
@@ -117,6 +89,8 @@ export default class CheckHeader extends UpsunDocCommand {
   private workspaceRoot!: string;
   private verbose = false;
   private categoryFilter?: string;
+  private validHeaderFields!: Set<string>;
+  private categories!: CategoryWithRegex[];
 
   /**
    * Initialize command - called before run()
@@ -141,6 +115,14 @@ export default class CheckHeader extends UpsunDocCommand {
       this.verbose = flags.verbose || false;
       this.categoryFilter = flags.category;
 
+      // Load configuration
+      const checkConfig = config.check;
+      this.validHeaderFields = new Set(checkConfig.validHeaderFields);
+      this.categories = checkConfig.categories.map((cat) => ({
+        ...cat,
+        pathPattern: new RegExp(cat.pathPattern),
+      }));
+
       const targetPath = path.isAbsolute(args.path) ? args.path : path.join(this.workspaceRoot, args.path);
 
       if (!fs.existsSync(targetPath)) {
@@ -158,7 +140,7 @@ export default class CheckHeader extends UpsunDocCommand {
       this.displayResults(validations, summary);
 
       if (summary.invalidFiles > 0) {
-        this.error(`Found ${summary.invalidFiles} file(s) with invalid headers`, {exit: 1});
+        this.logger.failure(`Found ${summary.invalidFiles} file(s) with invalid headers`, {exit: 1});
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -196,8 +178,8 @@ export default class CheckHeader extends UpsunDocCommand {
   /**
    * Determine category for a file
    */
-  private getFileCategory(relativePath: string): {name: string; config: typeof CATEGORIES[0]} | null {
-    for (const category of CATEGORIES) {
+  private getFileCategory(relativePath: string): {name: string; config: CategoryWithRegex} | null {
+    for (const category of this.categories) {
       if (category.pathPattern.test(relativePath)) {
         return {config: category, name: category.name};
       }
@@ -248,7 +230,7 @@ export default class CheckHeader extends UpsunDocCommand {
 
       // Check for invalid fields
       for (const field of Object.keys(frontmatter)) {
-        if (!VALID_HEADER_FIELDS.has(field)) {
+        if (!this.validHeaderFields.has(field)) {
           validation.invalidFields.push(field);
           validation.warnings.push(`Unknown field: ${field}`);
         }
@@ -385,8 +367,8 @@ export default class CheckHeader extends UpsunDocCommand {
       this.logger.info('Invalid Files:');
       for (const validation of invalidFiles) {
         this.logger.error(`❌ ${validation.relativePath}`);
-        this.logger.error(`  Category: ${validation.category}`);
-        this.logger.error(`  Errors: ${validation.errors.join(', ')}`);
+        this.logger.error(`   Category: ${validation.category}`);
+        this.logger.error(`   Errors: ${validation.errors.join(', ')}`);
       }
     }
 
@@ -396,7 +378,7 @@ export default class CheckHeader extends UpsunDocCommand {
       this.logger.info('Files with Warnings:');
       for (const validation of filesWithWarnings) {
         this.logger.warn(`✅ ${validation.relativePath}`);
-        this.logger.warn(`  Warnings: ${validation.warnings.join(', ')}`);
+        this.logger.warn(`   Warnings: ${validation.warnings.join(', ')}`);
       }
     }
 
@@ -427,22 +409,22 @@ export default class CheckHeader extends UpsunDocCommand {
     this.logger.info('='.repeat(60));
     this.logger.info('📊 Validation Summary:');
     this.logger.info(`   Total files: ${summary.totalFiles}`);
-    this.logger.info(`   ✅ Valid files: ${summary.validFiles}`);
-    this.logger.info(`   ❌ Invalid files: ${summary.invalidFiles}`);
-    this.logger.info(`   ⚠️  Files with warnings: ${summary.filesWithWarnings}`);
-    this.logger.info(`   🏷️  Invalid fields count: ${summary.invalidFieldsCount}`);
+    this.logger.info(`   Valid files: ${summary.validFiles} ✅`);
+    this.logger.info(`   Invalid files: ${summary.invalidFiles} ❌`);
+    this.logger.info(`     Files with warnings: ${summary.filesWithWarnings} ⚠️`);
+    this.logger.info(`     Invalid fields count: ${summary.invalidFieldsCount} 🏷️`);
     this.logger.info('='.repeat(60));
 
     // Category statistics
     this.logger.info('📈 Statistics by Category:');
     for (const stats of summary.categoryStats) {
-      this.logger.info(`    📁 ${stats.category.toUpperCase()}:`);
+      this.logger.info(`  📁 ${stats.category.toUpperCase()}:`);
       this.logger.info(`     Total: ${stats.totalFiles}`);
-      this.logger.info(`     ✅ Valid: ${stats.validFiles}`);
-      this.logger.info(`     ❌ Invalid: ${stats.invalidFiles}`);
+      this.logger.info(`     Valid: ${stats.validFiles} ✅`);
+      this.logger.info(`     Invalid: ${stats.invalidFiles} ❌`);
 
       if (Object.keys(stats.commonFields).length > 0) {
-        this.logger.info('    Common fields:');
+        this.logger.info('     Common fields:');
         const sortedFields = Object.entries(stats.commonFields).sort(([, a], [, b]) => b - a);
         for (const [field, count] of sortedFields) {
           const percentage = ((count / stats.totalFiles) * 100).toFixed(0);
@@ -451,7 +433,7 @@ export default class CheckHeader extends UpsunDocCommand {
       }
 
       if (Object.keys(stats.missingFields).length > 0) {
-        this.logger.info('    Missing required fields:');
+        this.logger.info('     Missing required fields:');
         for (const [field, count] of Object.entries(stats.missingFields)) {
           this.logger.info(`      - ${field}: ${count} file(s)`);
         }

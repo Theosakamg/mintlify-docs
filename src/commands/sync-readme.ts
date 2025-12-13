@@ -243,13 +243,13 @@ export default class SyncReadme extends UpsunDocCommand {
       }
 
       if (successCount === 0) {
-        this.logger.failure('❌ All sources failed to synchronize');
+        this.logger.failure('All sources failed to synchronize');
         this.error('All sources failed to synchronize', {exit: 1});
       } else {
         this.logger.warn('⚠️  Some sources failed but continuing with available content');
       }
     } else {
-      this.logger.success('✅ All sources synchronized successfully!');
+      this.logger.success('All sources synchronized successfully!');
     }
 
     return summary;

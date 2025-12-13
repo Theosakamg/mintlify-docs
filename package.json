@@ -15,7 +15,6 @@
     "install-dev": "npm i -g mint && ./scripts/install-dev.sh",
     "install:update": "mint update",
     "install:autocomplete": "node ./bin/run.js autocomplete:script",
-    "blog:generate": "node ./bin/run.js blog:generate",
     "cache:generate": "node ./bin/run.js sync-readme",
     "cache:clear": "node ./bin/run.js clean",
     "cache:check:mdx": "node ./bin/run.js check:mdx contents/snippets/.cache",
@@ -32,11 +31,11 @@
     "check:header:verbose": "node ./bin/run.js check:header --verbose",
     "check:mdx": "node ./bin/run.js check:mdx contents",
     "check:openapi": "cd contents && mint openapi-check openapi.json",
-    "check:all": "npm run check:header ; npm run check:mdx ; npm run check:openapi ; cd contents && npm run check:broken-links ; npm run check:a11y",
+    "check:all": "npm run check:mdx ; npm run check:header ; npm run check:openapi ; cd contents && npm run check:broken-links ; npm run check:a11y",
     "publish": "cd contents && mint publish --env-file ../.env",
     "migrate:vendor-name": "node scripts/replace-vendor-name.js",
     "migrate:vendor-urlraw": "node scripts/replace-vendor-urlraw.js",
-    "app:all": "  npm run build && npm run cache:all && npm run blog:generate && npm run check:all"
+    "app:all": "  npm run build && npm run cache:all && npm run check:all"
   },
   "repository": {
     "type": "git",

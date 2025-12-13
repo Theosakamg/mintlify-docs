@@ -50,6 +50,24 @@ interface SyncConfig {
 }
 
 /**
+ * Check category configuration
+ */
+interface CheckCategory {
+  name: string;
+  pathPattern: string;
+  requiredFields: string[];
+  optionalFields: string[];
+}
+
+/**
+ * Check configuration
+ */
+interface CheckConfig {
+  validHeaderFields: string[];
+  categories: CheckCategory[];
+}
+
+/**
  * Complete configuration structure
  */
 interface Config {
@@ -57,6 +75,7 @@ interface Config {
   app: AppConfig;
   github: GithubConfig;
   sync: SyncConfig;
+  check: CheckConfig;
 }
 
 /**
@@ -130,6 +149,31 @@ class TypedConfig {
   }
 
   /**
+   * Get check configuration
+   */
+  get check(): CheckConfig {
+    const defaultValidFields = [
+      'title', 'description', 'icon', 'sidebarTitle', 'mode',
+      'date', 'tag', 'author', 'image', 'category', 'published',
+      'draft', 'keywords', 'og:title', 'og:description', 'og:image',
+      'twitter:card', 'twitter:title', 'twitter:description', 'twitter:image',
+    ];
+
+    const defaultCategories: CheckCategory[] = [
+      {name: 'articles', pathPattern: '^articles/', requiredFields: ['title', 'date'], optionalFields: ['description', 'tag', 'author']},
+      {name: 'api', pathPattern: '^api/', requiredFields: ['title'], optionalFields: ['description', 'icon']},
+      {name: 'ai', pathPattern: '^ai/', requiredFields: ['title'], optionalFields: ['description', 'icon', 'sidebarTitle']},
+      {name: 'docs', pathPattern: '^docs/', requiredFields: ['title'], optionalFields: ['description', 'icon', 'sidebarTitle']},
+      {name: 'root', pathPattern: '^[^/]+\\.mdx?$', requiredFields: ['title'], optionalFields: ['description', 'icon']},
+    ];
+
+    return {
+      validHeaderFields: this.manager.get<string[]>('check.validHeaderFields', defaultValidFields),
+      categories: this.manager.get<CheckCategory[]>('check.categories', defaultCategories),
+    };
+  }
+
+  /**
    * Access to underlying config manager for advanced use
    */
   get raw(): UpsunDocConfig {
@@ -141,5 +185,5 @@ class TypedConfig {
 const typedConfig = new TypedConfig();
 export default typedConfig;
 export type {
-  AppConfig, Config, GithubConfig, LoggerConfig, SyncConfig, SyncSource,
+  AppConfig, CheckCategory, CheckConfig, Config, GithubConfig, LoggerConfig, SyncConfig, SyncSource,
 };

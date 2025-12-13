@@ -232,7 +232,7 @@ export default class BlogGenerate extends UpsunDocCommand {
     this.logger.info('='.repeat(60));
 
     if (summary.articlesProcessed > 0) {
-      this.logger.success('✅ Articles generated successfully!');
+      this.logger.success('Articles generated successfully!');
     } else {
       this.logger.warn('⚠️  No articles found to generate');
     }

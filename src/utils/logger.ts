@@ -279,7 +279,7 @@ class Logger {
    * @param data - Additional data to log (e.g., { file: 'example.zip', size: '10MB' })
    */
   download(msg: string, data: Record<string, unknown> = {}): void {
-    this.pinoLogger.info({...data, emoji: EVENT_EMOJIS.download}, `${msg}`);
+    this.pinoLogger.info({...data, emoji: EVENT_EMOJIS.download}, `${EVENT_EMOJIS.download}  ${msg}`);
   }
 
   /**
@@ -288,7 +288,7 @@ class Logger {
    * @param data - Additional data to log
    */
   upload(msg: string, data: Record<string, unknown> = {}): void {
-    this.pinoLogger.info({...data, emoji: EVENT_EMOJIS.upload}, `${msg}`);
+    this.pinoLogger.info({...data, emoji: EVENT_EMOJIS.upload}, `${EVENT_EMOJIS.upload}  ${msg}`);
   }
 
   /**

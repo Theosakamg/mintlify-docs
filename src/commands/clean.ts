@@ -175,7 +175,7 @@ export default class Clean extends UpsunDocCommand {
     } else if (summary.deletedFiles === 0 && summary.deletedDirs === 0) {
       this.logger.info('✅ Cache was already empty');
     } else {
-      this.logger.success('✅ Cache cleaned successfully!');
+      this.logger.success('Cache cleaned successfully!');
     }
   }
 }
