@@ -1,10 +1,10 @@
-import fs from 'node:fs'
-import path from 'node:path'
-import config from '../config/config.js'
-import Logger from '../utils/logger.js'
-import initHookApp from '../hooks/init/app.js'
-import UpsunDocCommand from '../base-command.js'
-import { globalExamples } from '../config.js'
+import fs from 'node:fs';
+import path from 'node:path';
+import config from '../config/config.js';
+import Logger from '../utils/logger.js';
+import initHookApp from '../hooks/init/app.js';
+import UpsunDocCommand from '../base-command.js';
+import {globalExamples} from '../config.js';
 
 /**
  * Clean result summary
@@ -17,21 +17,18 @@ interface CleanSummary {
 }
 
 export default class Clean extends UpsunDocCommand {
-  static override description = 'Clean cache directory by removing all cached files'
+  static override description = 'Clean cache directory by removing all cached files';
 
-  static override examples = [
-    '<%= config.bin %> <%= command.id %>',
-    ...globalExamples,
-  ]
+  static override examples = ['<%= config.bin %> <%= command.id %>', ...globalExamples];
 
-  private logger!: Logger
-  private workspaceRoot!: string
+  private logger!: Logger;
+  private workspaceRoot!: string;
 
   /**
    * Initialize command - called before run()
    */
   public async init(): Promise<void> {
-    await super.init()
+    await super.init();
 
     // Call the init hook manually with all required properties
     await initHookApp.call(this as any, {
@@ -39,28 +36,28 @@ export default class Clean extends UpsunDocCommand {
       config: this.config,
       context: this as any,
       id: this.id,
-    })
+    });
   }
 
   public async run(): Promise<void> {
-    await this.parse(Clean)
+    await this.parse(Clean);
 
     try {
       // Initialize logger and workspace root
-      this.logger = new Logger('clean')
-      this.workspaceRoot = process.cwd()
+      this.logger = new Logger('clean');
+      this.workspaceRoot = process.cwd();
 
       // Execute cleaning
-      const summary = await this.cleanCache()
+      const summary = await this.cleanCache();
 
       // Display summary
-      this.displaySummary(summary)
+      this.displaySummary(summary);
 
       // Force exit to close pino-pretty worker threads
-      process.exit(0)
+      process.exit(0);
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error)
-      this.error(`Clean operation failed: ${message}`, { exit: 1 })
+      const message = error instanceof Error ? error.message : String(error);
+      this.error(`Clean operation failed: ${message}`, {exit: 1});
     }
   }
 
@@ -69,10 +66,10 @@ export default class Clean extends UpsunDocCommand {
    */
   private getFileSize(filePath: string): number {
     try {
-      const stats = fs.statSync(filePath)
-      return stats.size
+      const stats = fs.statSync(filePath);
+      return stats.size;
     } catch {
-      return 0
+      return 0;
     }
   }
 
@@ -85,104 +82,104 @@ export default class Clean extends UpsunDocCommand {
       deletedFiles: 0,
       errors: [],
       totalSize: 0,
-    }
+    };
 
     try {
       if (!fs.existsSync(dirPath)) {
-        this.logger.warn(`Directory does not exist: ${dirPath}`)
-        return summary
+        this.logger.warn(`Directory does not exist: ${dirPath}`);
+        return summary;
       }
 
-      const items = fs.readdirSync(dirPath, { withFileTypes: true })
+      const items = fs.readdirSync(dirPath, {withFileTypes: true});
 
       for (const item of items) {
-        const fullPath = path.join(dirPath, item.name)
-        const relativePath = path.relative(this.workspaceRoot, fullPath)
+        const fullPath = path.join(dirPath, item.name);
+        const relativePath = path.relative(this.workspaceRoot, fullPath);
 
         try {
           if (item.isDirectory()) {
             // Recursively delete directory
-            const subSummary = this.deleteDirContents(fullPath)
-            summary.deletedFiles += subSummary.deletedFiles
-            summary.deletedDirs += subSummary.deletedDirs
-            summary.totalSize += subSummary.totalSize
-            summary.errors.push(...subSummary.errors)
+            const subSummary = this.deleteDirContents(fullPath);
+            summary.deletedFiles += subSummary.deletedFiles;
+            summary.deletedDirs += subSummary.deletedDirs;
+            summary.totalSize += subSummary.totalSize;
+            summary.errors.push(...subSummary.errors);
 
-            fs.rmdirSync(fullPath)
-            summary.deletedDirs++
-            this.logger.info(`🗑️  Deleted directory: ${relativePath}`)
+            fs.rmdirSync(fullPath);
+            summary.deletedDirs++;
+            this.logger.info(`🗑️  Deleted directory: ${relativePath}`);
           } else {
             // Delete file
-            const fileSize = this.getFileSize(fullPath)
-            fs.unlinkSync(fullPath)
-            summary.deletedFiles++
-            summary.totalSize += fileSize
-            this.logger.info(`🗑️  Deleted file: ${relativePath}`)
+            const fileSize = this.getFileSize(fullPath);
+            fs.unlinkSync(fullPath);
+            summary.deletedFiles++;
+            summary.totalSize += fileSize;
+            this.logger.info(`🗑️  Deleted file: ${relativePath}`);
           }
         } catch (error) {
-          const message = error instanceof Error ? error.message : String(error)
-          this.logger.error(`Failed to delete ${relativePath}: ${message}`)
-          summary.errors.push(`${relativePath}: ${message}`)
+          const message = error instanceof Error ? error.message : String(error);
+          this.logger.error(`Failed to delete ${relativePath}: ${message}`);
+          summary.errors.push(`${relativePath}: ${message}`);
         }
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error)
-      this.logger.error(`Failed to read directory: ${message}`)
-      summary.errors.push(`Directory read error: ${message}`)
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Failed to read directory: ${message}`);
+      summary.errors.push(`Directory read error: ${message}`);
     }
 
-    return summary
+    return summary;
   }
 
   /**
    * Clean cache directory
    */
   private async cleanCache(): Promise<CleanSummary> {
-    const cacheDir = path.join(this.workspaceRoot, config.sync.cacheDir)
-    const relativeCacheDir = path.relative(this.workspaceRoot, cacheDir)
+    const cacheDir = path.join(this.workspaceRoot, config.sync.cacheDir);
+    const relativeCacheDir = path.relative(this.workspaceRoot, cacheDir);
 
-    this.logger.start(`Cleaning cache directory: ${relativeCacheDir}`)
+    this.logger.start(`Cleaning cache directory: ${relativeCacheDir}`);
 
     if (!fs.existsSync(cacheDir)) {
-      this.logger.warn('Cache directory does not exist, nothing to clean')
+      this.logger.warn('Cache directory does not exist, nothing to clean');
       return {
         deletedDirs: 0,
         deletedFiles: 0,
         errors: [],
         totalSize: 0,
-      }
+      };
     }
 
-    const summary = this.deleteDirContents(cacheDir)
+    const summary = this.deleteDirContents(cacheDir);
 
-    return summary
+    return summary;
   }
 
   /**
    * Display clean summary
    */
   private displaySummary(summary: CleanSummary): void {
-    this.logger.info('='.repeat(60))
-    this.logger.info('🧹 Clean Summary:')
-    this.logger.info(`   Files deleted: ${summary.deletedFiles}`)
-    this.logger.info(`   Directories deleted: ${summary.deletedDirs}`)
-    this.logger.info(`   Total space freed: ${(summary.totalSize / 1024).toFixed(2)} KB`)
+    this.logger.info('='.repeat(60));
+    this.logger.info('🧹 Clean Summary:');
+    this.logger.info(`   Files deleted: ${summary.deletedFiles}`);
+    this.logger.info(`   Directories deleted: ${summary.deletedDirs}`);
+    this.logger.info(`   Total space freed: ${(summary.totalSize / 1024).toFixed(2)} KB`);
 
     if (summary.errors.length > 0) {
-      this.logger.info(`   Errors: ${summary.errors.length}`)
+      this.logger.info(`   Errors: ${summary.errors.length}`);
     }
 
-    this.logger.info('='.repeat(60))
+    this.logger.info('='.repeat(60));
 
     if (summary.errors.length > 0) {
-      this.logger.warn('❌ Some errors occurred during cleaning:')
+      this.logger.warn('❌ Some errors occurred during cleaning:');
       summary.errors.forEach((error, index) => {
-        this.logger.error(`${index + 1}. ${error}`)
-      })
+        this.logger.error(`${index + 1}. ${error}`);
+      });
     } else if (summary.deletedFiles === 0 && summary.deletedDirs === 0) {
-      this.logger.info('✅ Cache was already empty')
+      this.logger.info('✅ Cache was already empty');
     } else {
-      this.logger.success('✅ Cache cleaned successfully!')
+      this.logger.success('✅ Cache cleaned successfully!');
     }
   }
 }

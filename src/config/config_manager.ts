@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import dotenv from 'dotenv';
-import Logger from '../utils/logger.js'
+import Logger from '../utils/logger.js';
 
 /**
  * Type for configuration object (can be deeply nested)
@@ -80,7 +80,7 @@ class Config {
     }
 
     if (Array.isArray(obj)) {
-      return obj.map(item => this.processEnvVars(item));
+      return obj.map((item) => this.processEnvVars(item));
     }
 
     if (obj && typeof obj === 'object') {
@@ -104,11 +104,9 @@ class Config {
     try {
       // Load environment variables from .env file
       this.logger.info(`Loading configuration from environement variables file (.env)`);
-      dotenv.config({ quiet: true });
+      dotenv.config({quiet: true});
 
-      const absolutePath = path.isAbsolute(filePath)
-        ? filePath
-        : path.resolve(process.cwd(), filePath);
+      const absolutePath = path.isAbsolute(filePath) ? filePath : path.resolve(process.cwd(), filePath);
 
       let fileContent: string;
       try {
@@ -143,9 +141,7 @@ class Config {
 
     for (const filePath of filePaths) {
       try {
-        const absolutePath = path.isAbsolute(filePath)
-          ? filePath
-          : path.resolve(process.cwd(), filePath);
+        const absolutePath = path.isAbsolute(filePath) ? filePath : path.resolve(process.cwd(), filePath);
 
         try {
           const fileContent = fs.readFileSync(absolutePath, 'utf8');
@@ -239,7 +235,7 @@ class Config {
    * @returns Complete configuration object
    */
   getAll(): ConfigData {
-    return { ...this.config };
+    return {...this.config};
   }
 
   /**
@@ -262,14 +258,12 @@ class Config {
       throw new Error('No file path specified and no default path available');
     }
 
-    const absolutePath = path.isAbsolute(targetPath)
-      ? targetPath
-      : path.resolve(process.cwd(), targetPath);
+    const absolutePath = path.isAbsolute(targetPath) ? targetPath : path.resolve(process.cwd(), targetPath);
 
     const yamlContent = yaml.dump(this.config, {
       indent: 2,
       lineWidth: 120,
-      noRefs: true
+      noRefs: true,
     });
 
     fs.writeFileSync(absolutePath, yamlContent, 'utf8');
@@ -298,7 +292,7 @@ class Config {
    * @returns Merged object
    */
   private deepMerge(target: ConfigData, source: ConfigData): ConfigData {
-    const result: ConfigData = { ...target };
+    const result: ConfigData = {...target};
 
     for (const key in source) {
       if (Object.prototype.hasOwnProperty.call(source, key)) {
@@ -337,5 +331,5 @@ class Config {
 }
 
 // Export class and singleton instance
-export { Config };
+export {Config};
 export default Config.getInstance();

@@ -25,11 +25,7 @@ const config = require('./src/utils/config');
 config.load('config.yaml');
 
 // Load multiple files (merged in order)
-config.loadMultiple([
-  'config.yaml',
-  'config.local.yaml',
-  'config.production.yaml'
-]);
+config.loadMultiple(['config.yaml', 'config.local.yaml', 'config.production.yaml']);
 ```
 
 ### Accessing Values
@@ -60,9 +56,7 @@ config.set('logger.level', 'debug');
 config.set('api.timeout', 10000);
 
 // Chaining
-config
-  .set('app.name', 'my-app')
-  .set('app.version', '2.0.0');
+config.set('app.name', 'my-app').set('app.version', '2.0.0');
 ```
 
 ### Saving Configuration
@@ -78,6 +72,7 @@ config.save('config.backup.yaml');
 ## API Reference
 
 See the complete API in the source code:
+
 - [`load(filePath)`](https://github.com/Theosakamg/mintlify-docs/blob/main/src/utils/config.js#L43-L65) - Load configuration from file
 - [`loadMultiple(filePaths)`](https://github.com/Theosakamg/mintlify-docs/blob/main/src/utils/config.js#L67-L89) - Load and merge multiple files
 - [`get(keyPath, defaultValue)`](https://github.com/Theosakamg/mintlify-docs/blob/main/src/utils/config.js#L91-L110) - Get configuration value
@@ -109,9 +104,7 @@ database:
 
 ```javascript
 const env = process.env.NODE_ENV || 'development';
-const configFile = env === 'production'
-  ? 'config.production.yaml'
-  : 'config.yaml';
+const configFile = env === 'production' ? 'config.production.yaml' : 'config.yaml';
 
 config.load(configFile);
 ```
@@ -145,7 +138,7 @@ const appPort = config.get('app.port', 3000);
 const dbConfig = {
   host: config.get('database.host', 'localhost'),
   port: config.get('database.port', 5432),
-  database: config.get('database.name', 'mydb')
+  database: config.get('database.name', 'mydb'),
 };
 
 console.log(`Starting ${appName} on port ${appPort}`);

@@ -35,7 +35,7 @@ config.load('config.yaml');
 Logger.initialize({
   level: config.get('logger.level', 'info'),
   prettyPrint: config.get('logger.prettyPrint', true),
-  enableEmojis: config.get('logger.enableEmojis', true)
+  enableEmojis: config.get('logger.enableEmojis', true),
 });
 ```
 
@@ -52,7 +52,7 @@ const logger = Logger.getLogger();
 
 logger.info('Application started');
 logger.success('Operation completed');
-logger.error('Something went wrong', { error: err.message });
+logger.error('Something went wrong', {error: err.message});
 ```
 
 ### Creating Module-Specific Loggers
@@ -74,15 +74,16 @@ The logger supports 6 verbosity levels (from most detailed to most critical):
 ```javascript
 const logger = Logger.getLogger();
 
-logger.trace('Internal technical details');     // 🔍 TRACE
-logger.debug('Variable value:', { userId: 123 }); // 🐛 DEBUG
-logger.info('Service started on port 3000');     // ℹ️ INFO
-logger.warn('Deprecated API used');              // ⚠️ WARN
-logger.error('Database connection failed');      // ❌ ERROR
+logger.trace('Internal technical details'); // 🔍 TRACE
+logger.debug('Variable value:', {userId: 123}); // 🐛 DEBUG
+logger.info('Service started on port 3000'); // ℹ️ INFO
+logger.warn('Deprecated API used'); // ⚠️ WARN
+logger.error('Database connection failed'); // ❌ ERROR
 logger.fatal('Fatal error, stopping application'); // 💀 FATAL
 ```
 
 See emoji definitions in source:
+
 - [Level emojis](https://github.com/Theosakamg/mintlify-docs/blob/main/src/utils/logger.js#L4-L11)
 - [Event emojis](https://github.com/Theosakamg/mintlify-docs/blob/main/src/utils/logger.js#L16-L32)
 
@@ -105,12 +106,12 @@ const Logger = require('./src/utils/logger');
 
 // Create module-specific loggers
 const dbLogger = Logger.child('database');
-const apiLogger = Logger.child('api', { version: '1.0' });
+const apiLogger = Logger.child('api', {version: '1.0'});
 const syncLogger = Logger.child('sync');
 
-dbLogger.info('Connection established');  // [database] Connection established
-apiLogger.info('Request received');       // [api] Request received
-syncLogger.info('Sync completed');        // [sync] Sync completed
+dbLogger.info('Connection established'); // [database] Connection established
+apiLogger.info('Request received'); // [api] Request received
+syncLogger.info('Sync completed'); // [sync] Sync completed
 ```
 
 ### Nested Sub-Loggers
@@ -138,14 +139,15 @@ logger.start('Starting service');
 logger.stop('Stopping service');
 
 // Download/Upload
-logger.download('Downloading file.zip', { size: '2.5MB' });
-logger.upload('Uploading to S3', { destination: 's3://bucket/file' });
+logger.download('Downloading file.zip', {size: '2.5MB'});
+logger.upload('Uploading to S3', {destination: 's3://bucket/file'});
 
 // Custom emoji
 logger.withEmoji('🎉', 'Celebration!', 'info');
 ```
 
 See all available methods:
+
 - [`success(msg, data)`](https://github.com/Theosakamg/mintlify-docs/blob/main/src/utils/logger.js#L186-L192)
 - [`failure(msg, data)`](https://github.com/Theosakamg/mintlify-docs/blob/main/src/utils/logger.js#L194-L200)
 - [`start(msg, data)`](https://github.com/Theosakamg/mintlify-docs/blob/main/src/utils/logger.js#L202-L208)
@@ -184,9 +186,9 @@ The logger reads configuration from `config.yaml`:
 
 ```yaml
 logger:
-  level: info           # trace, debug, info, warn, error, fatal
-  prettyPrint: true     # Use pino-pretty for colored output
-  enableEmojis: true    # Enable emoji indicators
+  level: info # trace, debug, info, warn, error, fatal
+  prettyPrint: true # Use pino-pretty for colored output
+  enableEmojis: true # Enable emoji indicators
 ```
 
 ### Production Configuration
@@ -194,7 +196,7 @@ logger:
 ```yaml
 logger:
   level: warn
-  prettyPrint: false    # JSON output for log aggregation
+  prettyPrint: false # JSON output for log aggregation
   enableEmojis: false
 ```
 
@@ -217,7 +219,7 @@ class DatabaseService {
       // Connection logic
       this.logger.success('Database connected');
     } catch (error) {
-      this.logger.failure('Connection failed', { error: error.message });
+      this.logger.failure('Connection failed', {error: error.message});
       throw error;
     }
   }
@@ -231,7 +233,7 @@ class ApiService {
   handleRequest(req) {
     this.logger.info('Request received', {
       method: req.method,
-      path: req.path
+      path: req.path,
     });
   }
 }
@@ -251,15 +253,15 @@ async function downloadFile(url, destination) {
 
   try {
     await downloadLogger.time('Download operation', async () => {
-      downloadLogger.debug('Connecting to server...', { url });
+      downloadLogger.debug('Connecting to server...', {url});
       // Download logic here
-      downloadLogger.download('Download in progress...', { url, destination });
+      downloadLogger.download('Download in progress...', {url, destination});
     });
 
-    downloadLogger.success('File downloaded successfully', { destination });
+    downloadLogger.success('File downloaded successfully', {destination});
     return true;
   } catch (error) {
-    downloadLogger.failure('Download failed', { url, error: error.message });
+    downloadLogger.failure('Download failed', {url, error: error.message});
     return false;
   }
 }
@@ -275,12 +277,11 @@ async function riskyOperation() {
   try {
     logger.debug('Starting risky operation');
     // Operation logic
-
   } catch (error) {
     logger.error('Error caught', {
       errorMessage: error.message,
       errorStack: error.stack,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     logger.failure('Operation failed');
@@ -292,6 +293,7 @@ async function riskyOperation() {
 ## API Reference
 
 See complete API in source code:
+
 - [`initialize(options)`](https://github.com/Theosakamg/mintlify-docs/blob/main/src/utils/logger.js#L50-L94) - Initialize root logger
 - [`getLogger()`](https://github.com/Theosakamg/mintlify-docs/blob/main/src/utils/logger.js#L96-L102) - Get root logger instance
 - [`child(name, bindings)`](https://github.com/Theosakamg/mintlify-docs/blob/main/src/utils/logger.js#L104-L127) - Create sub-logger

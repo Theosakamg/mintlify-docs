@@ -4,7 +4,7 @@
  */
 
 import ConfigManager from './config_manager.js';
-import { Config as UpsunDocConfig } from './config_manager.js';
+import {Config as UpsunDocConfig} from './config_manager.js';
 
 /**
  * Logger configuration
@@ -90,7 +90,7 @@ class TypedConfig {
     return {
       level: this.manager.get<LoggerConfig['level']>('logger.level', 'info'),
       prettyPrint: this.manager.get<boolean>('logger.prettyPrint', true),
-      enableEmojis: this.manager.get<boolean>('logger.enableEmojis', true)
+      enableEmojis: this.manager.get<boolean>('logger.enableEmojis', true),
     };
   }
 
@@ -101,7 +101,7 @@ class TypedConfig {
     return {
       name: this.manager.get<string>('app.name', 'application'),
       version: this.manager.getVersionFromPackageJson(),
-      environment: this.manager.get<AppConfig['environment']>('app.environment', 'development')
+      environment: this.manager.get<AppConfig['environment']>('app.environment', 'development'),
     };
   }
 
@@ -110,7 +110,7 @@ class TypedConfig {
    */
   get github(): GithubConfig {
     return {
-      token: this.manager.get<string>('github.token', process.env.GITHUB_TOKEN || '')
+      token: this.manager.get<string>('github.token', process.env.GITHUB_TOKEN || ''),
     };
   }
 
@@ -120,8 +120,11 @@ class TypedConfig {
   get sync(): SyncConfig {
     return {
       cacheDir: this.manager.get<string>('sync.cacheDir', 'contents/snippets/.cache'),
-      fallbackContentPath: this.manager.get<string>('sync.fallbackContentPath', 'contents/snippets/common/notContent.mdx'),
-      sources: this.manager.get<SyncSource[]>('sync.sources', [])
+      fallbackContentPath: this.manager.get<string>(
+        'sync.fallbackContentPath',
+        'contents/snippets/common/notContent.mdx',
+      ),
+      sources: this.manager.get<SyncSource[]>('sync.sources', []),
     };
   }
 
@@ -136,4 +139,4 @@ class TypedConfig {
 // Create and export singleton instance
 const typedConfig = new TypedConfig();
 export default typedConfig;
-export type { Config, LoggerConfig, AppConfig, GithubConfig, SyncConfig, SyncSource };
+export type {Config, LoggerConfig, AppConfig, GithubConfig, SyncConfig, SyncSource};

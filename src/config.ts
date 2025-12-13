@@ -1,4 +1,4 @@
-import { Flags } from '@oclif/core';
+import {Flags} from '@oclif/core';
 
 export const globalFlags = {
   config: Flags.string({
@@ -8,6 +8,4 @@ export const globalFlags = {
   }),
 };
 
-export const globalExamples = [
-  '<%= config.bin %> <%= command.id %> --config custom-config.yaml',
-];
+export const globalExamples = ['<%= config.bin %> <%= command.id %> --config custom-config.yaml'];

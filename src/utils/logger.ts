@@ -1,4 +1,4 @@
-import pino, { type Logger as PinoLogger } from 'pino';
+import pino, {type Logger as PinoLogger} from 'pino';
 import config from '../config/config.js';
 
 /**
@@ -24,7 +24,7 @@ const LEVEL_EMOJIS: Record<LogLevel, string> = {
   info: 'ℹ️',
   warn: '⚠️',
   error: '❌',
-  fatal: '💀'
+  fatal: '💀',
 };
 
 /**
@@ -46,7 +46,7 @@ const EVENT_EMOJIS = {
   security: '🔒',
   time: '⏱️',
   checkmark: '✓',
-  cross: '✗'
+  cross: '✗',
 } as const;
 
 /**
@@ -85,13 +85,16 @@ class Logger {
     // Use synchronous stdout destination to ensure chronological ordering
     const destination = pino.destination({
       dest: 1, // stdout
-      sync: true
+      sync: true,
     });
 
-    this.pinoLogger = pino({
-      ...Logger.pinoConfig,
-      base: { context }
-    }, destination);
+    this.pinoLogger = pino(
+      {
+        ...Logger.pinoConfig,
+        base: {context},
+      },
+      destination,
+    );
   }
 
   /**
@@ -108,16 +111,16 @@ class Logger {
     try {
       configLogger = config.logger;
     } catch {
-      configLogger = { level: 'info' as LogLevel, prettyPrint: true, enableEmojis: true };
+      configLogger = {
+        level: 'info' as LogLevel,
+        prettyPrint: true,
+        enableEmojis: true,
+      };
     }
 
     const level = options.level || configLogger.level;
-    const prettyPrint = options.prettyPrint !== undefined
-      ? options.prettyPrint
-      : configLogger.prettyPrint;
-    const enableEmojis = options.enableEmojis !== undefined
-      ? options.enableEmojis
-      : configLogger.enableEmojis;
+    const prettyPrint = options.prettyPrint !== undefined ? options.prettyPrint : configLogger.prettyPrint;
+    const enableEmojis = options.enableEmojis !== undefined ? options.enableEmojis : configLogger.enableEmojis;
 
     Logger.pinoConfig = {
       level,
@@ -128,22 +131,22 @@ class Logger {
             colorize: true,
             translateTime: 'SYS:standard',
             ignore: 'pid,hostname,levelLabel,levelEmoji,emoji,context',
-            messageFormat: enableEmojis
-              ? '{levelEmoji} [{context}] {msg}'
-              : '[{context}] {msg}',
+            messageFormat: enableEmojis ? '{levelEmoji} [{context}] {msg}' : '[{context}] {msg}',
             customColors: 'info:blue,warn:yellow,error:red,debug:gray',
             singleLine: true,
-            sync: true
-          }
-        }
+            sync: true,
+          },
+        },
       }),
-      formatters: prettyPrint ? {
-        level: (label: string) => {
-          return {
-            levelEmoji: enableEmojis ? LEVEL_EMOJIS[label as LogLevel] || '' : ''
-          };
-        }
-      } : undefined
+      formatters: prettyPrint
+        ? {
+            level: (label: string) => {
+              return {
+                levelEmoji: enableEmojis ? LEVEL_EMOJIS[label as LogLevel] || '' : '',
+              };
+            },
+          }
+        : undefined,
     };
   }
 
@@ -223,7 +226,7 @@ class Logger {
    * @param data - Additional data to log
    */
   success(msg: string, data: Record<string, unknown> = {}): void {
-    this.pinoLogger.info({ ...data, emoji: EVENT_EMOJIS.success }, `${EVENT_EMOJIS.success} ${msg}`);
+    this.pinoLogger.info({...data, emoji: EVENT_EMOJIS.success}, `${EVENT_EMOJIS.success} ${msg}`);
   }
 
   /**
@@ -232,7 +235,7 @@ class Logger {
    * @param data - Additional data to log
    */
   failure(msg: string, data: Record<string, unknown> = {}): void {
-    this.pinoLogger.error({ ...data, emoji: EVENT_EMOJIS.failure }, `${EVENT_EMOJIS.failure} ${msg}`);
+    this.pinoLogger.error({...data, emoji: EVENT_EMOJIS.failure}, `${EVENT_EMOJIS.failure} ${msg}`);
   }
 
   /**
@@ -241,7 +244,7 @@ class Logger {
    * @param data - Additional data to log
    */
   start(msg: string, data: Record<string, unknown> = {}): void {
-    this.pinoLogger.info({ ...data, emoji: EVENT_EMOJIS.start }, `${EVENT_EMOJIS.start} ${msg}`);
+    this.pinoLogger.info({...data, emoji: EVENT_EMOJIS.start}, `${EVENT_EMOJIS.start} ${msg}`);
   }
 
   /**
@@ -250,7 +253,7 @@ class Logger {
    * @param data - Additional data to log
    */
   stop(msg: string, data: Record<string, unknown> = {}): void {
-    this.pinoLogger.info({ ...data, emoji: EVENT_EMOJIS.stop }, `${EVENT_EMOJIS.stop} ${msg}`);
+    this.pinoLogger.info({...data, emoji: EVENT_EMOJIS.stop}, `${EVENT_EMOJIS.stop} ${msg}`);
   }
 
   /**
@@ -259,7 +262,7 @@ class Logger {
    * @param data - Additional data to log (e.g., { file: 'example.zip', size: '10MB' })
    */
   download(msg: string, data: Record<string, unknown> = {}): void {
-    this.pinoLogger.info({ ...data, emoji: EVENT_EMOJIS.download }, `${msg}`);
+    this.pinoLogger.info({...data, emoji: EVENT_EMOJIS.download}, `${msg}`);
   }
 
   /**
@@ -268,7 +271,7 @@ class Logger {
    * @param data - Additional data to log
    */
   upload(msg: string, data: Record<string, unknown> = {}): void {
-    this.pinoLogger.info({ ...data, emoji: EVENT_EMOJIS.upload }, `${msg}`);
+    this.pinoLogger.info({...data, emoji: EVENT_EMOJIS.upload}, `${msg}`);
   }
 
   /**
@@ -279,10 +282,8 @@ class Logger {
    * @param data - Additional data to log
    */
   withEmoji(emoji: string, msg: string, level: LogLevel = 'info', data: Record<string, unknown> = {}): void {
-    this.pinoLogger[level]({ ...data, emoji }, `${emoji} ${msg}`);
+    this.pinoLogger[level]({...data, emoji}, `${emoji} ${msg}`);
   }
-
-
 
   /**
    * Get logger context
@@ -305,12 +306,16 @@ class Logger {
     try {
       const result = await fn();
       const duration = Date.now() - start;
-      this.info(`⏱️  Completed: ${label} (${duration}ms)`, { duration, label });
+      this.info(`⏱️  Completed: ${label} (${duration}ms)`, {duration, label});
       return result;
     } catch (error) {
       const duration = Date.now() - start;
       const message = error instanceof Error ? error.message : String(error);
-      this.error(`⏱️  Failed: ${label} (${duration}ms)`, { duration, label, error: message });
+      this.error(`⏱️  Failed: ${label} (${duration}ms)`, {
+        duration,
+        label,
+        error: message,
+      });
       throw error;
     }
   }
@@ -320,7 +325,7 @@ class Logger {
    * @returns Event emojis mapping
    */
   static getEventEmojis(): typeof EVENT_EMOJIS {
-    return { ...EVENT_EMOJIS };
+    return {...EVENT_EMOJIS};
   }
 }
 

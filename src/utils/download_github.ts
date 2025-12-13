@@ -1,5 +1,5 @@
 import https from 'https';
-import { IncomingMessage } from 'http';
+import {IncomingMessage} from 'http';
 import Logger from './logger.js';
 
 /**
@@ -80,19 +80,14 @@ export class DownloadGithub {
    * @throws Error if download fails or token is required but not provided
    */
   async download(url: string, options: DownloadOptions = {}): Promise<DownloadResult> {
-    const {
-      token = this.token,
-      isPrivate = false,
-      maxRedirects = 5,
-      timeout = 30000
-    } = options;
+    const {token = this.token, isPrivate = false, maxRedirects = 5, timeout = 30000} = options;
 
     // Validate token for private repositories
     if (isPrivate && !token) {
       throw new Error('GitHub token is required for private repositories');
     }
 
-    this.logger.debug(`Downloading from ${url}`, { isPrivate, maxRedirects });
+    this.logger.debug(`Downloading from ${url}`, {isPrivate, maxRedirects});
 
     return this._downloadRecursive(url, token, isPrivate, maxRedirects, 0, timeout);
   }
@@ -113,7 +108,7 @@ export class DownloadGithub {
     isPrivate: boolean,
     maxRedirects: number,
     redirectCount: number,
-    timeout: number
+    timeout: number,
   ): Promise<DownloadResult> {
     if (redirectCount >= maxRedirects) {
       throw new Error(`Too many redirects (max: ${maxRedirects})`);
@@ -134,7 +129,7 @@ export class DownloadGithub {
         path: urlObj.pathname + urlObj.search,
         method: 'GET',
         headers,
-        timeout
+        timeout,
       };
 
       const request = https.get(options, (res: IncomingMessage) => {
@@ -148,17 +143,10 @@ export class DownloadGithub {
 
           this.logger.debug(`Following redirect to ${redirectUrl}`, {
             statusCode: res.statusCode,
-            redirectCount: redirectCount + 1
+            redirectCount: redirectCount + 1,
           });
 
-          this._downloadRecursive(
-            redirectUrl,
-            token,
-            isPrivate,
-            maxRedirects,
-            redirectCount + 1,
-            timeout
-          )
+          this._downloadRecursive(redirectUrl, token, isPrivate, maxRedirects, redirectCount + 1, timeout)
             .then(resolve)
             .catch(reject);
           return;
@@ -181,7 +169,7 @@ export class DownloadGithub {
           resolve({
             content: data,
             statusCode: res.statusCode!,
-            finalUrl: url
+            finalUrl: url,
           });
         });
 
@@ -207,13 +195,10 @@ export class DownloadGithub {
    * @param options - Download options (applied to all URLs)
    * @returns Array of download results (same order as input)
    */
-  async downloadMultiple(
-    urls: string[],
-    options: DownloadOptions = {}
-  ): Promise<DownloadResult[]> {
+  async downloadMultiple(urls: string[], options: DownloadOptions = {}): Promise<DownloadResult[]> {
     this.logger.info(`Downloading ${urls.length} resources in parallel`);
 
-    const promises = urls.map(url => this.download(url, options));
+    const promises = urls.map((url) => this.download(url, options));
     return Promise.all(promises);
   }
 
@@ -224,7 +209,7 @@ export class DownloadGithub {
    * @returns True if accessible (200 OK), false otherwise
    */
   async isAccessible(url: string, options: DownloadOptions = {}): Promise<boolean> {
-    const { token = this.token, isPrivate = false, timeout = 10000 } = options;
+    const {token = this.token, isPrivate = false, timeout = 10000} = options;
 
     try {
       const urlObj = new URL(url);
@@ -240,7 +225,7 @@ export class DownloadGithub {
         path: urlObj.pathname + urlObj.search,
         method: 'HEAD',
         headers,
-        timeout
+        timeout,
       };
 
       return new Promise<boolean>((resolve) => {

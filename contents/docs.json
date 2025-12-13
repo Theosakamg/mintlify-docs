@@ -41,9 +41,7 @@
       {
         "tab": "Home",
         "icon": "house",
-        "pages": [
-          "index"
-        ]
+        "pages": ["index"]
       },
       {
         "tab": "Documentation",
@@ -55,21 +53,7 @@
             "pages": [
               {
                 "group": "Introduction",
-                "pages": [
-                  "docs/docs",
-                  "docs/get-started/here",
-                  "docs/get-started/here/setup",
-                  "docs/get-started/here/create-project",
-                  {
-                    "group": "Configure your project",
-                    "pages": [
-                      "docs/get-started/here/configure",
-                      "docs/get-started/here/configure/python"
-                    ]
-                  },
-                  "docs/get-started/here/set-resources",
-                  "docs/get-started/here/third-party"
-                ]
+                "pages": []
               }
             ]
           }
@@ -85,10 +69,7 @@
             "pages": [
               {
                 "group": "Configure Apps",
-                "pages": [
-                  "docs/create-apps",
-                  "docs/create-apps/troubleshoot-mounts"
-                ]
+                "pages": []
               }
             ]
           }
@@ -109,13 +90,7 @@
               {
                 "group": "SDK",
                 "icon": "package",
-                "pages": [
-                  "api/sdk/overview",
-                  "api/sdk/php",
-                  "api/sdk/js",
-                  "api/sdk/python",
-                  "api/sdk/go"
-                ]
+                "pages": ["api/sdk/overview", "api/sdk/php", "api/sdk/js", "api/sdk/python", "api/sdk/go"]
               },
               {
                 "group": "Resources",
@@ -175,20 +150,14 @@
       {
         "tab": "Articles",
         "icon": "newspaper",
-        "groups":[
+        "groups": [
           {
             "group": "Articles",
-            "pages": [
-              "articles/latest",
-              "articles",
-              "articles/ai"
-            ]
+            "pages": ["articles/latest", "articles", "articles/ai"]
           },
           {
             "group": "Categories",
-            "pages": [
-              "articles/discussions"
-            ]
+            "pages": ["articles/discussions"]
           }
         ]
       },
@@ -196,7 +165,7 @@
         "tab": "AI",
         "icon": "brain",
         "groups": [
-           {
+          {
             "group": "AI",
             "icon": "brain",
             "pages": [
@@ -206,28 +175,17 @@
                   "ai/mcp/overview",
                   {
                     "group": "Integrations",
-                    "pages": [
-                      "ai/mcp/integrations/cursor",
-                      "ai/mcp/integrations/vscode",
-                      "ai/mcp/integrations/all"
-                    ]
+                    "pages": ["ai/mcp/integrations/cursor", "ai/mcp/integrations/vscode", "ai/mcp/integrations/all"]
                   }
                 ]
               },
               {
                 "group": "Onboarding",
-                "pages": [
-                  "ai/onboarding/overview",
-                  "ai/onboarding/setup",
-                  "ai/onboarding/best-practices"
-                ]
+                "pages": ["ai/onboarding/overview", "ai/onboarding/setup", "ai/onboarding/best-practices"]
               },
               {
                 "group": "Docs",
-                "pages": [
-                  "ai/articles/latest",
-                  "ai/articles/all"
-                ]
+                "pages": []
               }
             ]
           }
@@ -236,20 +194,16 @@
       {
         "tab": "Status",
         "icon": "signal",
-        "pages": [
-          "status"
-        ]
+        "pages": ["status"]
       },
       {
         "tab": "Changelog",
         "icon": "megaphone",
-        "pages": [
-          "changelog"
-        ]
+        "pages": ["changelog"]
       }
     ],
     "global": {
-        "anchors": [
+      "anchors": [
         {
           "anchor": "Community",
           "href": "https://discord.gg/upsun",
@@ -296,16 +250,7 @@
     }
   },
   "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+    "options": ["copy", "view", "chatgpt", "claude", "perplexity", "mcp", "cursor", "vscode"]
   },
   "footer": {
     "socials": {
@@ -339,11 +284,11 @@
             "label": "FAQ",
             "href": "https://devcenter.upsun.com/docs/introduction/faq"
           },
-           {
+          {
             "label": "Roadmap",
             "href": "https://devcenter.upsun.com/"
           },
-           {
+          {
             "label": "Status",
             "href": "https://devcenter.upsun.com/status"
           }
@@ -382,7 +327,7 @@
       "measurementId": "G-XXXXXXXXXX"
     },
     "telemetry": {
-      "enabled": true
+      "enabled": false
     }
   },
   "seo": {
