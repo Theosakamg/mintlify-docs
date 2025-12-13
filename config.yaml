@@ -1,0 +1,143 @@
+# Application Configuration
+
+# Logger Configuration
+logger:
+  # Log level: trace, debug, info, warn, error, fatal
+  level: info
+
+  # Enable pretty printing with colors (set to false for production JSON output)
+  prettyPrint: true
+
+  # Enable emoji indicators in logs
+  enableEmojis: false
+
+# Application Settings
+app:
+  name: upsun-docs
+  environment: development
+  folder: contents
+
+# GitHub Configuration
+github:
+  # GitHub Personal Access Token (create one at: https://github.com/settings/tokens)
+  # Can be overridden by GITHUB_TOKEN environment variable
+  token: ${GITHUB_TOKEN}
+
+# Sync Configuration
+sync:
+  cacheDir: contents/snippets/.cache
+  fallbackContentPath: contents/snippets/common/notContent.mdx
+
+  sources:
+    - url: https://meta.upsun.com/openapi.json
+      output: openapi/meta-openapi.json
+      private: true
+
+    - url: https://raw.githubusercontent.com/upsun/upsun-sdk-php/main/README.md
+      output: sdk/php-readme.mdx
+      private: false
+
+    - url: https://raw.githubusercontent.com/upsun/upsun-sdk-node/main/README.md
+      output: sdk/js-readme.mdx
+      private: true
+
+    # - url: https://raw.githubusercontent.com/upsun/upsun-sdk-python/main/README.md
+    #   output: sdk/python-readme.mdx
+    #   private: true
+
+    - url: https://raw.githubusercontent.com/upsun/upsun-sdk-go/main/README.md
+      output: sdk/go-readme.mdx
+      private: true
+
+    - url: https://raw.githubusercontent.com/upsun/pluginapp-starter/main/README.md
+      output: plugin-app/starterkit-readme.mdx
+      private: true
+
+    - url: https://raw.githubusercontent.com/upsun/pluginapp-sdk-node/main/README.md
+      output: plugin-app/sdk-node-readme.mdx
+      private: true
+
+# Check Configuration
+check:
+  # Valid header fields for MDX/MD files
+  validHeaderFields:
+    - title
+    - description
+    - icon
+    - sidebarTitle
+    - mode
+    - date
+    - tag
+    - author
+    - image
+    - category
+    - published
+    - draft
+    - keywords
+    - rss
+    - og:title
+    - og:description
+    - og:image
+    - twitter:card
+    - twitter:title
+    - twitter:description
+    - twitter:image
+
+  # Category configurations for header validation
+  categories:
+    - name: articles
+      pathPattern: ^articles/
+      requiredFields:
+        - title
+        - date
+      optionalFields:
+        - description
+        - tag
+        - author
+
+    - name: api
+      pathPattern: ^api/
+      requiredFields:
+        - title
+      optionalFields:
+        - description
+        - icon
+
+    - name: ai
+      pathPattern: ^ai/
+      requiredFields:
+        - title
+      optionalFields:
+        - description
+        - icon
+        - sidebarTitle
+
+    - name: docs
+      pathPattern: ^docs/
+      requiredFields:
+        - title
+      optionalFields:
+        - description
+        - icon
+        - sidebarTitle
+
+    - name: root
+      pathPattern: ^[^/]+\.mdx?$
+      requiredFields:
+        - title
+      optionalFields:
+        - description
+        - icon
+
+# Example: API Configuration
+# api:
+#   baseUrl: https://api.example.com
+#   timeout: 5000
+#   retries: 3
+
+# Example: Database Configuration
+# database:
+#   host: localhost
+#   port: 5432
+#   name: mydb
+#   user: admin
