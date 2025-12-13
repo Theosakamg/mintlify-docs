@@ -5,6 +5,7 @@ import Logger from '../utils/logger.js'
 import DownloadGithub from '../utils/download_github.js'
 import initHookApp from '../hooks/init/app.js'
 import UpsunDocCommand from '../base-command.js'
+import { globalExamples } from '../config.js'
 
 /**
  * Sync result for a single source
@@ -31,7 +32,7 @@ export default class SyncReadme extends UpsunDocCommand {
 
   static override examples = [
     '<%= config.bin %> <%= command.id %>',
-    '<%= config.bin %> <%= command.id %> --config custom-config.yaml',
+    ...globalExamples,
   ]
 
   // static override flags = {

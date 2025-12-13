@@ -96,7 +96,7 @@ logger:
 
 app:
   name: my-application
-  version: 1.0.0
+  # Note: version is automatically read from package.json
   environment: development
 
 database:

@@ -7,3 +7,7 @@ export const globalFlags = {
     required: false,
   }),
 };
+
+export const globalExamples = [
+  '<%= config.bin %> <%= command.id %> --config custom-config.yaml',
+];

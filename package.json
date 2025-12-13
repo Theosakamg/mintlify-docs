@@ -14,9 +14,10 @@
     "type-check": "tsc --noEmit",
     "install-dev": "npm i -g mint && ./scripts/install-dev.sh",
     "install:update": "mint update",
-    "cache:generate": "node ./bin/run.js sync-readme",
-    "cache:clear": "rm -rf contents/snippets/.cache/*",
-    "cache:check:mdx": "node ./bin/run.js check-mdx contents/snippets/.cache",
+    "install:autocomplete": "node ./bin/run.js autocomplete:script || echo 'Please run: npm run build'",
+    "cache:generate": "node ./bin/run.js sync-readme || echo 'Please run: npm run build'",
+    "cache:clear": "node ./bin/run.js clean || echo 'Please run: npm run build'",
+    "cache:check:mdx": "node ./bin/run.js check-mdx contents/snippets/.cache || echo 'Please run: npm run build'",
     "cache:articles": "node scripts/get-latest-articles.js",
     "cache:all": "npm run cache:clear && npm run cache:generate && npm run cache:articles && npm run cache:check:mdx",
     "start": "npm run cache:generate && npm run cache:articles && cd contents && mint dev --verbose --env-file ../.env",
@@ -57,6 +58,7 @@
   },
   "dependencies": {
     "@oclif/core": "^4.8.0",
+    "@oclif/plugin-autocomplete": "^3.2.39",
     "js-yaml": "^4.1.1",
     "pino": "^10.1.0",
     "pino-pretty": "^13.1.3"
@@ -69,6 +71,9 @@
     "commands": "./dist/commands",
     "hooks": "./dist/hooks",
     "dirname": "upsun-docs",
-    "topicSeparator": " "
+    "topicSeparator": ":",
+    "plugins": [
+      "@oclif/plugin-autocomplete"
+    ]
   }
 }

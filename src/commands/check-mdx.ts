@@ -5,6 +5,7 @@ import { compile } from '@mdx-js/mdx'
 import Logger from '../utils/logger.js'
 import initHookApp from '../hooks/init/app.js'
 import UpsunDocCommand from '../base-command.js'
+import { globalExamples } from '../config.js'
 
 /**
  * Validation result for a single MDX file
@@ -36,6 +37,7 @@ export default class CheckMdx extends UpsunDocCommand {
     '<%= config.bin %> <%= command.id %> contents',
     '<%= config.bin %> <%= command.id %> contents/articles/ai.mdx',
     '<%= config.bin %> <%= command.id %> --path contents/api',
+    ...globalExamples,
   ]
 
   static override flags = {

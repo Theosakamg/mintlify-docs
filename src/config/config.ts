@@ -100,7 +100,7 @@ class TypedConfig {
   get app(): AppConfig {
     return {
       name: this.manager.get<string>('app.name', 'application'),
-      version: this.manager.get<string>('app.version', '0.0.0'),
+      version: this.manager.getVersionFromPackageJson(),
       environment: this.manager.get<AppConfig['environment']>('app.environment', 'development')
     };
   }

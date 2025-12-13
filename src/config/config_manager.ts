@@ -318,6 +318,22 @@ class Config {
 
     return result;
   }
+
+  /**
+   * Get version from package.json
+   * @param packageJsonPath - Optional path to package.json (defaults to project root)
+   * @returns Version string from package.json or '0.0.0' if not found
+   */
+  getVersionFromPackageJson(packageJsonPath?: string): string {
+    try {
+      const targetPath = packageJsonPath || path.resolve(process.cwd(), 'package.json');
+      const packageJson = JSON.parse(fs.readFileSync(targetPath, 'utf-8'));
+      return packageJson.version || '0.0.0';
+    } catch (error) {
+      this.logger.warn('Could not read version from package.json, using default 0.0.0');
+      return '0.0.0';
+    }
+  }
 }
 
 // Export class and singleton instance

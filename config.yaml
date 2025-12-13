@@ -14,7 +14,6 @@ logger:
 # Application Settings
 app:
   name: upsun-docs
-  version: 1.0.0
   environment: development
 
 # GitHub Configuration
