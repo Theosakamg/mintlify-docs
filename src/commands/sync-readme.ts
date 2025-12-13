@@ -229,8 +229,8 @@ export default class SyncReadme extends UpsunDocCommand {
     this.logger.info('='.repeat(60));
     this.logger.info('📊 Synchronization Summary:');
     this.logger.info(`   Total sources: ${sources.length}`);
-    this.logger.info(`   ✅ Success: ${successCount}`);
-    this.logger.info(`   ❌ Failed: ${failedCount}`);
+    this.logger.info(`   Success: ${successCount} ✅`);
+    this.logger.info(`   Failed: ${failedCount} ❌`);
     this.logger.info('='.repeat(60));
 
     if (failedCount > 0) {
