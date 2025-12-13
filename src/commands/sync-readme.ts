@@ -226,14 +226,15 @@ export default class SyncReadme extends UpsunDocCommand {
     };
 
     // Log summary
-    this.logger.info('Synchronization complete', {
-      failed: failedCount,
-      success: successCount,
-      total: sources.length,
-    });
+    this.logger.info('='.repeat(60));
+    this.logger.info('📊 Synchronization Summary:');
+    this.logger.info(`   Total sources: ${sources.length}`);
+    this.logger.info(`   ✅ Success: ${successCount}`);
+    this.logger.info(`   ❌ Failed: ${failedCount}`);
+    this.logger.info('='.repeat(60));
 
     if (failedCount > 0) {
-      this.logger.warn(`${failedCount} source(s) failed to download`);
+      this.logger.warn(`⚠️  ${failedCount} source(s) failed to download`);
 
       // Log failed sources
       const failedResults = results.filter(r => !r.success);
@@ -242,13 +243,13 @@ export default class SyncReadme extends UpsunDocCommand {
       }
 
       if (successCount === 0) {
-        this.logger.failure('All sources failed to synchronize');
+        this.logger.failure('❌ All sources failed to synchronize');
         this.error('All sources failed to synchronize', {exit: 1});
       } else {
-        this.logger.warn('Some sources failed but continuing with available content');
+        this.logger.warn('⚠️  Some sources failed but continuing with available content');
       }
     } else {
-      this.logger.success('All sources synchronized successfully');
+      this.logger.success('✅ All sources synchronized successfully!');
     }
 
     return summary;

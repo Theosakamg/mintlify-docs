@@ -15,6 +15,7 @@ logger:
 app:
   name: upsun-docs
   environment: development
+  folder: contents
 
 # GitHub Configuration
 github:

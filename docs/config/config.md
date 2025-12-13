@@ -93,12 +93,48 @@ app:
   name: my-application
   # Note: version is automatically read from package.json
   environment: development
+  folder: contents  # Base folder for content files
+
+github:
+  token: ${GITHUB_TOKEN}  # GitHub token from environment variable
+
+sync:
+  cacheDir: contents/snippets/.cache
+  fallbackContentPath: contents/snippets/common/notContent.mdx
+  sources:
+    - url: https://example.com/file.md
+      output: path/to/output.mdx
+      private: false
 
 database:
   host: localhost
   port: 5432
   name: mydb
 ```
+
+## Configuration Structure
+
+### Logger Configuration
+- **level**: Log level (trace, debug, info, warn, error, fatal)
+- **prettyPrint**: Enable colored output (true for development)
+- **enableEmojis**: Enable emoji indicators in logs
+
+### App Configuration
+- **name**: Application name
+- **version**: Automatically read from package.json
+- **environment**: Current environment (development, production, test)
+- **folder**: Base folder for content files (default: `contents`)
+
+### GitHub Configuration
+- **token**: GitHub Personal Access Token (supports environment variables with `${GITHUB_TOKEN}`)
+
+### Sync Configuration
+- **cacheDir**: Directory for cached files
+- **fallbackContentPath**: Path to fallback content when sync fails
+- **sources**: Array of sync sources
+  - **url**: Source URL to download from
+  - **output**: Output path relative to cache directory
+  - **private**: Whether the source requires authentication
 
 ## Environment-Specific Configuration
 
@@ -116,6 +152,45 @@ config.load(configFile);
 3. **Environment-specific files** for different deployment targets
 4. **Don't commit sensitive data** in config files (use environment variables)
 5. **Validate configuration** at startup to catch errors early
+
+## TypeScript Usage
+
+```typescript
+import config from './config/config.js';
+
+// Access typed configuration
+const logLevel = config.logger.level;
+const appName = config.app.name;
+const contentFolder = config.app.folder;
+const githubToken = config.github.token;
+
+// Access sync configuration
+const cacheDir = config.sync.cacheDir;
+const sources = config.sync.sources;
+
+// Access raw config manager for advanced use
+const customValue = config.raw.get('custom.key', 'default');
+```
+
+## Example: Using in Commands
+
+```typescript
+import config from '../config/config.js';
+import path from 'node:path';
+
+export default class MyCommand extends Command {
+  public async run(): Promise<void> {
+    // Use configured content folder
+    const contentPath = path.join(process.cwd(), config.app.folder);
+    
+    // Use sync configuration
+    const cacheDir = path.join(process.cwd(), config.sync.cacheDir);
+    
+    // Use GitHub token for API calls
+    const token = config.github.token;
+  }
+}
+```
 
 ## Example: Complete Application Setup
 

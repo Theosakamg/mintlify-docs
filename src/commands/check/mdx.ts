@@ -140,14 +140,14 @@ export default class CheckMdx extends UpsunDocCommand {
       const content = fs.readFileSync(filePath, 'utf8');
       await compile(content);
 
-      this.logger.success(`✅ ${relativePath}`);
+      this.logger.success(`${relativePath}`);
 
       return {
         file: relativePath,
         success: true,
       };
     } catch (error: any) {
-      this.logger.failure(`❌ ${relativePath}`);
+      this.logger.failure(`${relativePath}`);
 
       return {
         column: error.column,
@@ -224,7 +224,7 @@ export default class CheckMdx extends UpsunDocCommand {
     // Display errors if any
     const errorResults = summary.results.filter(r => !r.success);
     if (errorResults.length > 0) {
-      this.logger.failure('❌ ERRORS DETECTED:');
+      this.logger.failure('ERRORS DETECTED:');
       this.logger.info('');
 
       for (const [index, result] of errorResults.entries()) {
@@ -241,7 +241,7 @@ export default class CheckMdx extends UpsunDocCommand {
         this.logger.info('');
       }
     } else {
-      this.logger.success('✅ All MDX files are valid!');
+      this.logger.success('All MDX files are valid!');
     }
   }
 }

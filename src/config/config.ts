@@ -21,6 +21,7 @@ interface AppConfig {
   name: string;
   version: string;
   environment: 'development' | 'production' | 'test';
+  folder: string;
 }
 
 /**
@@ -101,6 +102,7 @@ class TypedConfig {
       name: this.manager.get<string>('app.name', 'application'),
       version: this.manager.getVersionFromPackageJson(),
       environment: this.manager.get<AppConfig['environment']>('app.environment', 'development'),
+      folder: this.manager.get<string>('app.folder', 'contents'),
     };
   }
 
