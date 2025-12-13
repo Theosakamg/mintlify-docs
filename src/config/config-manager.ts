@@ -1,7 +1,8 @@
-import fs from 'fs';
-import path from 'path';
-import yaml from 'js-yaml';
 import dotenv from 'dotenv';
+import {dump, load} from 'js-yaml';
+import fs from 'node:fs';
+import path from 'node:path';
+
 import Logger from '../utils/logger.js';
 
 /**
@@ -18,23 +19,21 @@ class Config {
    * Singleton instance
    */
   private static instance: Config | null = null;
-
   /**
    * Configuration data
    */
   private config: ConfigData = {};
-
   /**
    * Default configuration file path
    */
   private configPath: string | null = null;
-
   private _logger: Logger | null = null;
 
   private get logger(): Logger {
     if (!this._logger) {
       this._logger = new Logger('config-manager');
     }
+
     return this._logger;
   }
 
@@ -43,8 +42,10 @@ class Config {
    */
   private constructor() {
     if (Config.instance) {
+      // eslint-disable-next-line no-constructor-return
       return Config.instance;
     }
+
     Config.instance = this;
   }
 
@@ -55,6 +56,7 @@ class Config {
     if (!Config.instance) {
       Config.instance = new Config();
     }
+
     return Config.instance;
   }
 
@@ -64,9 +66,7 @@ class Config {
    * @returns String with replaced values
    */
   private replaceEnvVars(str: string): string {
-    return str.replace(/\$\{([^}]+)\}/g, (match, varName) => {
-      return process.env[varName] || match;
-    });
+    return str.replaceAll(/\$\{([^}]+)\}/g, (match, varName) => process.env[varName] || match);
   }
 
   /**
@@ -80,7 +80,7 @@ class Config {
     }
 
     if (Array.isArray(obj)) {
-      return obj.map((item) => this.processEnvVars(item));
+      return obj.map(item => this.processEnvVars(item));
     }
 
     if (obj && typeof obj === 'object') {
@@ -88,6 +88,7 @@ class Config {
       for (const [key, value] of Object.entries(obj)) {
         result[key] = this.processEnvVars(value);
       }
+
       return result;
     }
 
@@ -103,7 +104,7 @@ class Config {
   load(filePath: string): Config {
     try {
       // Load environment variables from .env file
-      this.logger.info(`Loading configuration from environement variables file (.env)`);
+      this.logger.info('Loading configuration from environement variables file (.env)');
       dotenv.config({quiet: true});
 
       const absolutePath = path.isAbsolute(filePath) ? filePath : path.resolve(process.cwd(), filePath);
@@ -112,11 +113,11 @@ class Config {
       try {
         this.logger.info(`Reading configuration file from ${absolutePath}`);
         fileContent = fs.readFileSync(absolutePath, 'utf8');
-      } catch (error) {
+      } catch {
         throw new Error(`Configuration file not found: ${absolutePath}`);
       }
 
-      const rawConfig = (yaml.load(fileContent) as ConfigData) || {};
+      const rawConfig = (load(fileContent) as ConfigData) || {};
 
       // Process environment variables in configuration
       this.config = this.processEnvVars(rawConfig) as ConfigData;
@@ -127,6 +128,7 @@ class Config {
       if (error instanceof Error && error.name === 'YAMLException') {
         throw new Error(`Invalid YAML in configuration file: ${error.message}`);
       }
+
       throw error;
     }
   }
@@ -145,9 +147,9 @@ class Config {
 
         try {
           const fileContent = fs.readFileSync(absolutePath, 'utf8');
-          const partialConfig = (yaml.load(fileContent) as ConfigData) || {};
+          const partialConfig = (load(fileContent) as ConfigData) || {};
           this.config = this.deepMerge(this.config, partialConfig);
-        } catch (readError) {
+        } catch {
           // File doesn't exist or can't be read, skip it
         }
       } catch (error) {
@@ -202,10 +204,11 @@ class Config {
       if (!(key in current) || typeof current[key] !== 'object') {
         current[key] = {};
       }
+
       current = current[key] as ConfigData;
     }
 
-    const lastKey = keys[keys.length - 1]!;
+    const lastKey = keys.at(-1)!;
     current[lastKey] = value;
     return this;
   }
@@ -260,7 +263,7 @@ class Config {
 
     const absolutePath = path.isAbsolute(targetPath) ? targetPath : path.resolve(process.cwd(), targetPath);
 
-    const yamlContent = yaml.dump(this.config, {
+    const yamlContent = dump(this.config, {
       indent: 2,
       lineWidth: 120,
       noRefs: true,
@@ -295,18 +298,14 @@ class Config {
     const result: ConfigData = {...target};
 
     for (const key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        if (
-          source[key] instanceof Object &&
-          !Array.isArray(source[key]) &&
-          key in target &&
-          target[key] instanceof Object &&
-          !Array.isArray(target[key])
-        ) {
-          result[key] = this.deepMerge(target[key] as ConfigData, source[key] as ConfigData);
-        } else {
-          result[key] = source[key];
-        }
+      if (Object.hasOwn(source, key)) {
+        result[key] = source[key] instanceof Object
+          && !Array.isArray(source[key])
+          && key in target
+          && target[key] instanceof Object
+          && !Array.isArray(target[key])
+          ? this.deepMerge(target[key] as ConfigData, source[key] as ConfigData)
+          : source[key];
       }
     }
 
@@ -321,9 +320,9 @@ class Config {
   getVersionFromPackageJson(packageJsonPath?: string): string {
     try {
       const targetPath = packageJsonPath || path.resolve(process.cwd(), 'package.json');
-      const packageJson = JSON.parse(fs.readFileSync(targetPath, 'utf-8'));
+      const packageJson = JSON.parse(fs.readFileSync(targetPath, 'utf8'));
       return packageJson.version || '0.0.0';
-    } catch (error) {
+    } catch {
       this.logger.warn('Could not read version from package.json, using default 0.0.0');
       return '0.0.0';
     }

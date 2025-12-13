@@ -1,5 +1,6 @@
-import https from 'https';
-import {IncomingMessage} from 'http';
+import {IncomingMessage} from 'node:http';
+import https from 'node:https';
+
 import Logger from './logger.js';
 
 /**
@@ -51,7 +52,7 @@ export interface DownloadResult {
  * GitHub download utility class
  * Handles downloading content from GitHub with authentication support
  */
-export class DownloadGithub {
+class DownloadGithub {
   private logger: Logger;
   private token?: string;
 
@@ -80,7 +81,7 @@ export class DownloadGithub {
    * @throws Error if download fails or token is required but not provided
    */
   async download(url: string, options: DownloadOptions = {}): Promise<DownloadResult> {
-    const {token = this.token, isPrivate = false, maxRedirects = 5, timeout = 30000} = options;
+    const {token = this.token, isPrivate = false, maxRedirects = 5, timeout = 30_000} = options;
 
     // Validate token for private repositories
     if (isPrivate && !token) {
@@ -102,6 +103,7 @@ export class DownloadGithub {
    * @param timeout - Request timeout
    * @returns Download result
    */
+  // eslint-disable-next-line max-params
   private async _downloadRecursive(
     url: string,
     token: string | undefined,
@@ -120,7 +122,7 @@ export class DownloadGithub {
 
       // Add authentication headers for private repos
       if (isPrivate && token) {
-        headers['Authorization'] = `token ${token}`;
+        headers.Authorization = `token ${token}`;
         headers['User-Agent'] = 'Node.js-DownloadGithub';
       }
 
@@ -147,8 +149,8 @@ export class DownloadGithub {
           });
 
           this._downloadRecursive(redirectUrl, token, isPrivate, maxRedirects, redirectCount + 1, timeout)
-            .then(resolve)
-            .catch(reject);
+          .then(resolve)
+          .catch(reject);
           return;
         }
 
@@ -161,7 +163,7 @@ export class DownloadGithub {
         let data = '';
 
         res.on('data', (chunk: Buffer) => {
-          data += chunk.toString('utf-8');
+          data += chunk.toString('utf8');
         });
 
         res.on('end', () => {
@@ -198,7 +200,7 @@ export class DownloadGithub {
   async downloadMultiple(urls: string[], options: DownloadOptions = {}): Promise<DownloadResult[]> {
     this.logger.info(`Downloading ${urls.length} resources in parallel`);
 
-    const promises = urls.map((url) => this.download(url, options));
+    const promises = urls.map(url => this.download(url, options));
     return Promise.all(promises);
   }
 
@@ -209,14 +211,14 @@ export class DownloadGithub {
    * @returns True if accessible (200 OK), false otherwise
    */
   async isAccessible(url: string, options: DownloadOptions = {}): Promise<boolean> {
-    const {token = this.token, isPrivate = false, timeout = 10000} = options;
+    const {token = this.token, isPrivate = false, timeout = 10_000} = options;
 
     try {
       const urlObj = new URL(url);
       const headers: Record<string, string> = {};
 
       if (isPrivate && token) {
-        headers['Authorization'] = `token ${token}`;
+        headers.Authorization = `token ${token}`;
         headers['User-Agent'] = 'Node.js-DownloadGithub';
       }
 
@@ -228,7 +230,7 @@ export class DownloadGithub {
         timeout,
       };
 
-      return new Promise<boolean>((resolve) => {
+      return new Promise<boolean>(resolve => {
         const request = https.request(requestOptions, (res: IncomingMessage) => {
           resolve(res.statusCode === 200);
         });

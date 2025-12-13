@@ -3,8 +3,7 @@
  * Provides typed access to configuration values
  */
 
-import ConfigManager from './config_manager.js';
-import {Config as UpsunDocConfig} from './config_manager.js';
+import ConfigManager, {Config as UpsunDocConfig} from './config-manager.js';
 
 /**
  * Logger configuration
@@ -139,4 +138,6 @@ class TypedConfig {
 // Create and export singleton instance
 const typedConfig = new TypedConfig();
 export default typedConfig;
-export type {Config, LoggerConfig, AppConfig, GithubConfig, SyncConfig, SyncSource};
+export type {
+  AppConfig, Config, GithubConfig, LoggerConfig, SyncConfig, SyncSource,
+};

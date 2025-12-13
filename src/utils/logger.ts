@@ -1,4 +1,5 @@
 import pino, {type Logger as PinoLogger} from 'pino';
+
 import config from '../config/config.js';
 
 /**
@@ -59,12 +60,10 @@ class Logger {
    * Shared pino configuration
    */
   private static pinoConfig: pino.LoggerOptions | null = null;
-
   /**
    * Pino logger instance
    */
   private pinoLogger: PinoLogger;
-
   /**
    * Logger context/name
    */
@@ -119,8 +118,8 @@ class Logger {
     }
 
     const level = options.level || configLogger.level;
-    const prettyPrint = options.prettyPrint !== undefined ? options.prettyPrint : configLogger.prettyPrint;
-    const enableEmojis = options.enableEmojis !== undefined ? options.enableEmojis : configLogger.enableEmojis;
+    const prettyPrint = options.prettyPrint === undefined ? configLogger.prettyPrint : options.prettyPrint;
+    const enableEmojis = options.enableEmojis === undefined ? configLogger.enableEmojis : options.enableEmojis;
 
     Logger.pinoConfig = {
       level,
@@ -140,12 +139,10 @@ class Logger {
       }),
       formatters: prettyPrint
         ? {
-            level: (label: string) => {
-              return {
-                levelEmoji: enableEmojis ? LEVEL_EMOJIS[label as LogLevel] || '' : '',
-              };
-            },
-          }
+          level: (label: string) => ({
+            levelEmoji: enableEmojis ? LEVEL_EMOJIS[label as LogLevel] || '' : '',
+          }),
+        }
         : undefined,
     };
   }

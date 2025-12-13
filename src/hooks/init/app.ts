@@ -1,8 +1,9 @@
 import {Hook, Parser} from '@oclif/core';
-import Logger from '../../utils/logger.js';
 import path from 'node:path';
-import config from '../../config/config.js';
+
 import {globalFlags} from '../../config.js';
+import config from '../../config/config.js';
+import Logger from '../../utils/logger.js';
 
 const hook: Hook<'init'> = async function (_options) {
   try {
@@ -16,7 +17,7 @@ const hook: Hook<'init'> = async function (_options) {
       });
 
       customConfigPath = parsed.flags.config;
-    } catch (error) {
+    } catch {
       // Ignore parsing errors, fall back to default config
     }
 

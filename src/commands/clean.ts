@@ -1,10 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import config from '../config/config.js';
-import Logger from '../utils/logger.js';
-import initHookApp from '../hooks/init/app.js';
+
 import UpsunDocCommand from '../base-command.js';
 import {globalExamples} from '../config.js';
+import config from '../config/config.js';
+import initHookApp from '../hooks/init/app.js';
+import Logger from '../utils/logger.js';
 
 /**
  * Clean result summary
@@ -18,9 +19,7 @@ interface CleanSummary {
 
 export default class Clean extends UpsunDocCommand {
   static override description = 'Clean cache directory by removing all cached files';
-
   static override examples = ['<%= config.bin %> <%= command.id %>', ...globalExamples];
-
   private logger!: Logger;
   private workspaceRoot!: string;
 
@@ -52,9 +51,6 @@ export default class Clean extends UpsunDocCommand {
 
       // Display summary
       this.displaySummary(summary);
-
-      // Force exit to close pino-pretty worker threads
-      process.exit(0);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       this.error(`Clean operation failed: ${message}`, {exit: 1});
@@ -173,9 +169,9 @@ export default class Clean extends UpsunDocCommand {
 
     if (summary.errors.length > 0) {
       this.logger.warn('❌ Some errors occurred during cleaning:');
-      summary.errors.forEach((error, index) => {
+      for (const [index, error] of summary.errors.entries()) {
         this.logger.error(`${index + 1}. ${error}`);
-      });
+      }
     } else if (summary.deletedFiles === 0 && summary.deletedDirs === 0) {
       this.logger.info('✅ Cache was already empty');
     } else {

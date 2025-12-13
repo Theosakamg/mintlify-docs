@@ -1,11 +1,12 @@
+import {compile} from '@mdx-js/mdx';
+import {Args, Flags} from '@oclif/core';
 import fs from 'node:fs';
 import path from 'node:path';
-import {Args, Flags} from '@oclif/core';
-import {compile} from '@mdx-js/mdx';
-import Logger from '../../utils/logger.js';
-import initHookApp from '../../hooks/init/app.js';
+
 import UpsunDocCommand from '../../base-command.js';
 import {globalExamples} from '../../config.js';
+import initHookApp from '../../hooks/init/app.js';
+import Logger from '../../utils/logger.js';
 
 /**
  * Validation result for a single MDX file
@@ -31,7 +32,6 @@ interface ValidationSummary {
 
 export default class CheckMdx extends UpsunDocCommand {
   static override description = 'Validate MDX files for syntax errors';
-
   static override examples = [
     '<%= config.bin %> <%= command.id %>',
     '<%= config.bin %> <%= command.id %> contents',
@@ -39,7 +39,6 @@ export default class CheckMdx extends UpsunDocCommand {
     '<%= config.bin %> <%= command.id %> --path contents/api',
     ...globalExamples,
   ];
-
   static override flags = {
     ...UpsunDocCommand.flags,
     path: Flags.string({
@@ -48,14 +47,12 @@ export default class CheckMdx extends UpsunDocCommand {
       default: 'contents',
     }),
   };
-
   static override args = {
     target: Args.string({
       description: 'Path to MDX file or directory to validate (alternative to --path flag)',
       required: false,
     }),
   };
-
   private logger!: Logger;
   private workspaceRoot!: string;
 
@@ -101,9 +98,6 @@ export default class CheckMdx extends UpsunDocCommand {
       if (summary.errors > 0) {
         this.error(`${summary.errors} MDX file(s) have errors`, {exit: 1});
       }
-
-      // Force exit to close pino-pretty worker threads
-      process.exit(0);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       this.error(`Validation failed: ${message}`, {exit: 1});
@@ -143,7 +137,7 @@ export default class CheckMdx extends UpsunDocCommand {
     const relativePath = path.relative(this.workspaceRoot, filePath);
 
     try {
-      const content = fs.readFileSync(filePath, 'utf-8');
+      const content = fs.readFileSync(filePath, 'utf8');
       await compile(content);
 
       this.logger.success(`✅ ${relativePath}`);
@@ -205,8 +199,8 @@ export default class CheckMdx extends UpsunDocCommand {
     }
 
     // Calculate summary
-    const validCount = results.filter((r) => r.success).length;
-    const errorCount = results.filter((r) => !r.success).length;
+    const validCount = results.filter(r => r.success).length;
+    const errorCount = results.filter(r => !r.success).length;
 
     return {
       errors: errorCount,
@@ -228,14 +222,14 @@ export default class CheckMdx extends UpsunDocCommand {
     this.logger.info('='.repeat(60));
 
     // Display errors if any
-    const errorResults = summary.results.filter((r) => !r.success);
+    const errorResults = summary.results.filter(r => !r.success);
     if (errorResults.length > 0) {
-      this.logger.failure(`❌ ERRORS DETECTED:`);
+      this.logger.failure('❌ ERRORS DETECTED:');
       this.logger.info('');
 
-      errorResults.forEach((result, index) => {
+      for (const [index, result] of errorResults.entries()) {
         this.logger.error(`${index + 1}. ${result.file}`);
-        if (result.line != null) {
+        if (result.line !== null) {
           this.logger.error(`   Line: ${result.line}, Column: ${result.column}`);
         }
 
@@ -245,7 +239,7 @@ export default class CheckMdx extends UpsunDocCommand {
 
         this.logger.error(`   Error: ${result.error}`);
         this.logger.info('');
-      });
+      }
     } else {
       this.logger.success('✅ All MDX files are valid!');
     }

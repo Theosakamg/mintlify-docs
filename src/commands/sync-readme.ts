@@ -1,11 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import config from '../config/config.js';
-import Logger from '../utils/logger.js';
-import DownloadGithub from '../utils/download_github.js';
-import initHookApp from '../hooks/init/app.js';
+
 import UpsunDocCommand from '../base-command.js';
 import {globalExamples} from '../config.js';
+import config from '../config/config.js';
+import initHookApp from '../hooks/init/app.js';
+import DownloadGithub from '../utils/download-github.js';
+import Logger from '../utils/logger.js';
 
 /**
  * Sync result for a single source
@@ -29,17 +30,7 @@ interface SyncSummary {
 
 export default class SyncReadme extends UpsunDocCommand {
   static override description = 'Synchronize external content from GitHub and other sources';
-
   static override examples = ['<%= config.bin %> <%= command.id %>', ...globalExamples];
-
-  // static override flags = {
-  //   config: Flags.string({
-  //     char: 'c',
-  //     description: 'Path to configuration file',
-  //     default: 'config.yaml',
-  //   }),
-  // }
-
   private logger!: Logger;
   private downloader!: DownloadGithub;
   private workspaceRoot!: string;
@@ -76,9 +67,6 @@ export default class SyncReadme extends UpsunDocCommand {
       if (summary.failed === summary.total) {
         this.error('All synchronization tasks failed', {exit: 1});
       }
-
-      // Force exit to close pino-pretty worker threads
-      process.exit(0);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       this.error(`Synchronization failed: ${message}`, {exit: 1});
@@ -91,14 +79,14 @@ export default class SyncReadme extends UpsunDocCommand {
   private cleanMarkdownForMDX(content: string): string {
     return (
       content
-        // Remove HTML comments
-        .replace(/<!--[\s\S]*?-->/g, '')
-        // Replace self-closing <br> tags with <br />
-        .replace(/<br>/g, '<br />')
-        // Replace <hr> tags with <hr />
-        .replace(/<hr>/g, '<hr />')
-        // Replace <img ...> tags with <img ... />
-        .replace(/<img ([^>]+)>/g, '<img $1 />')
+      // Remove HTML comments
+      .replaceAll(/<!--[\s\S]*?-->/g, '')
+      // Replace self-closing <br> tags with <br />
+      .replaceAll('<br>', '<br />')
+      // Replace <hr> tags with <hr />
+      .replaceAll('<hr>', '<hr />')
+      // Replace <img ...> tags with <img ... />
+      .replaceAll(/<img ([^>]+)>/g, '<img $1 />')
     );
   }
 
@@ -123,7 +111,7 @@ export default class SyncReadme extends UpsunDocCommand {
     const fallbackPath = path.join(this.workspaceRoot, config.sync.fallbackContentPath);
 
     try {
-      return fs.readFileSync(fallbackPath, 'utf-8');
+      return fs.readFileSync(fallbackPath, 'utf8');
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       this.logger.warn(`Could not read fallback content: ${message}`);
@@ -145,15 +133,15 @@ export default class SyncReadme extends UpsunDocCommand {
       const result = await this.downloader.download(url, {isPrivate});
 
       // Clean content for MDX (if Markdown)
-      const content =
-        output.endsWith('.mdx') || output.endsWith('.md') ? this.cleanMarkdownForMDX(result.content) : result.content;
+      const content
+        = output.endsWith('.mdx') || output.endsWith('.md') ? this.cleanMarkdownForMDX(result.content) : result.content;
 
       // Ensure output directory exists
       const dir = path.dirname(outputPath);
       this.ensureDirectory(dir);
 
       // Write content to file
-      fs.writeFileSync(outputPath, content, 'utf-8');
+      fs.writeFileSync(outputPath, content, 'utf8');
 
       this.logger.success(`Saved to ${output}`, {
         size: `${(content.length / 1024).toFixed(2)} KB`,
@@ -175,7 +163,7 @@ export default class SyncReadme extends UpsunDocCommand {
 
       const dir = path.dirname(outputPath);
       this.ensureDirectory(dir);
-      fs.writeFileSync(outputPath, fallbackContent, 'utf-8');
+      fs.writeFileSync(outputPath, fallbackContent, 'utf8');
 
       return {
         error: errorMessage,
@@ -192,7 +180,7 @@ export default class SyncReadme extends UpsunDocCommand {
   private async syncAll(): Promise<SyncSummary> {
     this.logger.start('Synchronizing external content');
 
-    const sources = config.sync.sources;
+    const {sources} = config.sync;
 
     if (sources.length === 0) {
       this.logger.warn('No sources configured for synchronization');
@@ -205,7 +193,7 @@ export default class SyncReadme extends UpsunDocCommand {
     }
 
     // Check if GitHub token is set for private sources
-    const hasPrivateSources = sources.some((s) => s.private);
+    const hasPrivateSources = sources.some(s => s.private);
     if (hasPrivateSources && !config.github.token) {
       this.logger.warn('Some sources are private but GITHUB_TOKEN is not set', {
         hint: 'Set GITHUB_TOKEN environment variable or update config.yaml',
@@ -222,8 +210,8 @@ export default class SyncReadme extends UpsunDocCommand {
     }
 
     // Calculate summary
-    const successCount = results.filter((r) => r.success).length;
-    const failedCount = results.filter((r) => !r.success).length;
+    const successCount = results.filter(r => r.success).length;
+    const failedCount = results.filter(r => !r.success).length;
 
     const summary: SyncSummary = {
       failed: failedCount,
@@ -243,7 +231,7 @@ export default class SyncReadme extends UpsunDocCommand {
       this.logger.warn(`${failedCount} source(s) failed to download`);
 
       // Log failed sources
-      const failedResults = results.filter((r) => !r.success);
+      const failedResults = results.filter(r => !r.success);
       for (const result of failedResults) {
         this.logger.error(`  - ${result.url}: ${result.error}`);
       }
