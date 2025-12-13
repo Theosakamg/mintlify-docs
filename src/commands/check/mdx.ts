@@ -2,10 +2,10 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { Args, Flags } from '@oclif/core'
 import { compile } from '@mdx-js/mdx'
-import Logger from '../utils/logger.js'
-import initHookApp from '../hooks/init/app.js'
-import UpsunDocCommand from '../base-command.js'
-import { globalExamples } from '../config.js'
+import Logger from '../../utils/logger.js'
+import initHookApp from '../../hooks/init/app.js'
+import UpsunDocCommand from '../../base-command.js'
+import { globalExamples } from '../../config.js'
 
 /**
  * Validation result for a single MDX file

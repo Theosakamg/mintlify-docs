@@ -59,6 +59,7 @@
   "dependencies": {
     "@oclif/core": "^4.8.0",
     "@oclif/plugin-autocomplete": "^3.2.39",
+    "@oclif/prettier-config": "^0.2.1",
     "js-yaml": "^4.1.1",
     "pino": "^10.1.0",
     "pino-pretty": "^13.1.3"
