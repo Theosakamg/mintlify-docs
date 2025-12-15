@@ -153,18 +153,59 @@ class TypedConfig {
    */
   get check(): CheckConfig {
     const defaultValidFields = [
-      'title', 'description', 'icon', 'sidebarTitle', 'mode',
-      'date', 'tag', 'author', 'image', 'category', 'published',
-      'draft', 'keywords', 'og:title', 'og:description', 'og:image',
-      'twitter:card', 'twitter:title', 'twitter:description', 'twitter:image',
+      'title',
+      'description',
+      'icon',
+      'sidebarTitle',
+      'mode',
+      'date',
+      'tag',
+      'author',
+      'image',
+      'category',
+      'published',
+      'draft',
+      'keywords',
+      'og:title',
+      'og:description',
+      'og:image',
+      'twitter:card',
+      'twitter:title',
+      'twitter:description',
+      'twitter:image',
     ];
 
     const defaultCategories: CheckCategory[] = [
-      {name: 'articles', pathPattern: '^articles/', requiredFields: ['title', 'date'], optionalFields: ['description', 'tag', 'author']},
-      {name: 'api', pathPattern: '^api/', requiredFields: ['title'], optionalFields: ['description', 'icon']},
-      {name: 'ai', pathPattern: '^ai/', requiredFields: ['title'], optionalFields: ['description', 'icon', 'sidebarTitle']},
-      {name: 'docs', pathPattern: '^docs/', requiredFields: ['title'], optionalFields: ['description', 'icon', 'sidebarTitle']},
-      {name: 'root', pathPattern: '^[^/]+\\.mdx?$', requiredFields: ['title'], optionalFields: ['description', 'icon']},
+      {
+        name: 'articles',
+        pathPattern: '^articles/',
+        requiredFields: ['title', 'date'],
+        optionalFields: ['description', 'tag', 'author'],
+      },
+      {
+        name: 'api',
+        pathPattern: '^api/',
+        requiredFields: ['title'],
+        optionalFields: ['description', 'icon'],
+      },
+      {
+        name: 'ai',
+        pathPattern: '^ai/',
+        requiredFields: ['title'],
+        optionalFields: ['description', 'icon', 'sidebarTitle'],
+      },
+      {
+        name: 'docs',
+        pathPattern: '^docs/',
+        requiredFields: ['title'],
+        optionalFields: ['description', 'icon', 'sidebarTitle'],
+      },
+      {
+        name: 'root',
+        pathPattern: String.raw`^[^/]+\.mdx?$`,
+        requiredFields: ['title'],
+        optionalFields: ['description', 'icon'],
+      },
     ];
 
     return {
@@ -184,6 +225,4 @@ class TypedConfig {
 // Create and export singleton instance
 const typedConfig = new TypedConfig();
 export default typedConfig;
-export type {
-  AppConfig, CheckCategory, CheckConfig, Config, GithubConfig, LoggerConfig, SyncConfig, SyncSource,
-};
+export type {AppConfig, CheckCategory, CheckConfig, Config, GithubConfig, LoggerConfig, SyncConfig, SyncSource};

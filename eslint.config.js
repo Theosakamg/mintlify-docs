@@ -11,12 +11,7 @@ export default [
   ...oclif,
   prettier,
   {
-    ignores: [
-      '.prettierrc.cjs',
-      'contents/**',
-      'unicorn/no-array-for-each',
-      'prefer-destructuring',
-    ],
+    ignores: ['.prettierrc.cjs', 'contents/**', 'unicorn/no-array-for-each', 'prefer-destructuring'],
   },
   {
     rules: {
@@ -29,6 +24,8 @@ export default [
       'n/no-unpublished-import': 'off',
       'n/no-unsupported-features/es-builtins': 'off',
       '@stylistic/indent-binary-ops': 'off',
+      'unicorn/prefer-ternary': 'off',
+      '@stylistic/arrow-parens': 'off',
     },
   },
 ];

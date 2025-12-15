@@ -152,8 +152,8 @@ class DownloadGithub {
           res.resume();
 
           this._downloadRecursive(redirectUrl, token, isPrivate, maxRedirects, redirectCount + 1, timeout)
-          .then(resolve)
-          .catch(reject);
+            .then(resolve)
+            .catch(reject);
           return;
         }
 
@@ -208,7 +208,7 @@ class DownloadGithub {
   async downloadMultiple(urls: string[], options: DownloadOptions = {}): Promise<DownloadResult[]> {
     this.logger.info(`Downloading ${urls.length} resources in parallel`);
 
-    const promises = urls.map(url => this.download(url, options));
+    const promises = urls.map((url) => this.download(url, options));
     return Promise.all(promises);
   }
 
@@ -238,7 +238,7 @@ class DownloadGithub {
         timeout,
       };
 
-      return new Promise<boolean>(resolve => {
+      return new Promise<boolean>((resolve) => {
         const request = https.request(requestOptions, (res: IncomingMessage) => {
           resolve(res.statusCode === 200);
         });

@@ -199,8 +199,8 @@ export default class CheckMdx extends UpsunDocCommand {
     }
 
     // Calculate summary
-    const validCount = results.filter(r => r.success).length;
-    const errorCount = results.filter(r => !r.success).length;
+    const validCount = results.filter((r) => r.success).length;
+    const errorCount = results.filter((r) => !r.success).length;
 
     return {
       errors: errorCount,
@@ -222,14 +222,14 @@ export default class CheckMdx extends UpsunDocCommand {
     this.logger.info('='.repeat(60));
 
     // Display errors if any
-    const errorResults = summary.results.filter(r => !r.success);
+    const errorResults = summary.results.filter((r) => !r.success);
     if (errorResults.length > 0) {
       this.logger.failure('ERRORS DETECTED:');
       this.logger.info('');
 
       for (const [index, result] of errorResults.entries()) {
         this.logger.error(`${index + 1}. ${result.file}`);
-        if (result.line !== null) {
+        if (result.line !== undefined) {
           this.logger.error(`   Line: ${result.line}, Column: ${result.column}`);
         }
 

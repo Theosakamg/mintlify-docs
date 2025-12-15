@@ -36,7 +36,7 @@ The project uses a YAML-based configuration system with TypeScript support. Conf
 app:
   name: upsun-docs
   environment: development
-  folder: contents  # Base folder for content files
+  folder: contents # Base folder for content files
 
 logger:
   level: info
@@ -44,7 +44,7 @@ logger:
   enableEmojis: false
 
 github:
-  token: ${GITHUB_TOKEN}  # Set via environment variable
+  token: ${GITHUB_TOKEN} # Set via environment variable
 
 sync:
   cacheDir: contents/snippets/.cache
@@ -52,6 +52,7 @@ sync:
 ```
 
 **Environment Variables**: Create a `.env` file for local development:
+
 ```env
 GITHUB_TOKEN=your_github_token_here
 ```

@@ -93,10 +93,10 @@ app:
   name: my-application
   # Note: version is automatically read from package.json
   environment: development
-  folder: contents  # Base folder for content files
+  folder: contents # Base folder for content files
 
 github:
-  token: ${GITHUB_TOKEN}  # GitHub token from environment variable
+  token: ${GITHUB_TOKEN} # GitHub token from environment variable
 
 sync:
   cacheDir: contents/snippets/.cache
@@ -115,20 +115,24 @@ database:
 ## Configuration Structure
 
 ### Logger Configuration
+
 - **level**: Log level (trace, debug, info, warn, error, fatal)
 - **prettyPrint**: Enable colored output (true for development)
 - **enableEmojis**: Enable emoji indicators in logs
 
 ### App Configuration
+
 - **name**: Application name
 - **version**: Automatically read from package.json
 - **environment**: Current environment (development, production, test)
 - **folder**: Base folder for content files (default: `contents`)
 
 ### GitHub Configuration
+
 - **token**: GitHub Personal Access Token (supports environment variables with `${GITHUB_TOKEN}`)
 
 ### Sync Configuration
+
 - **cacheDir**: Directory for cached files
 - **fallbackContentPath**: Path to fallback content when sync fails
 - **sources**: Array of sync sources
@@ -182,10 +186,10 @@ export default class MyCommand extends Command {
   public async run(): Promise<void> {
     // Use configured content folder
     const contentPath = path.join(process.cwd(), config.app.folder);
-    
+
     // Use sync configuration
     const cacheDir = path.join(process.cwd(), config.sync.cacheDir);
-    
+
     // Use GitHub token for API calls
     const token = config.github.token;
   }

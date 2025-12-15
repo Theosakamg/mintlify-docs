@@ -80,7 +80,7 @@ class Config {
     }
 
     if (Array.isArray(obj)) {
-      return obj.map(item => this.processEnvVars(item));
+      return obj.map((item) => this.processEnvVars(item));
     }
 
     if (obj && typeof obj === 'object') {
@@ -104,7 +104,7 @@ class Config {
   load(filePath: string): Config {
     try {
       // Load environment variables from .env file
-      this.logger.info('Loading configuration from environement variables file (.env)');
+      this.logger.info('Loading configuration from environment variables file (.env)');
       dotenv.config({quiet: true});
 
       const absolutePath = path.isAbsolute(filePath) ? filePath : path.resolve(process.cwd(), filePath);
@@ -299,13 +299,14 @@ class Config {
 
     for (const key in source) {
       if (Object.hasOwn(source, key)) {
-        result[key] = source[key] instanceof Object
-          && !Array.isArray(source[key])
-          && key in target
-          && target[key] instanceof Object
-          && !Array.isArray(target[key])
-          ? this.deepMerge(target[key] as ConfigData, source[key] as ConfigData)
-          : source[key];
+        result[key] =
+          source[key] instanceof Object &&
+          !Array.isArray(source[key]) &&
+          key in target &&
+          target[key] instanceof Object &&
+          !Array.isArray(target[key])
+            ? this.deepMerge(target[key] as ConfigData, source[key] as ConfigData)
+            : source[key];
       }
     }
 

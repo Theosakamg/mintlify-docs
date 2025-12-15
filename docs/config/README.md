@@ -15,11 +15,11 @@ Documentation for the configuration system in upsun-docs.
 import config from './config/config.js';
 
 // Typed access to configuration
-config.logger.level      // 'info' | 'debug' | ...
-config.app.name          // string
-config.app.folder        // string ('contents')
-config.github.token      // string
-config.sync.cacheDir     // string
+config.logger.level; // 'info' | 'debug' | ...
+config.app.name; // string
+config.app.folder; // string ('contents')
+config.github.token; // string
+config.sync.cacheDir; // string
 ```
 
 ### Configuration File Structure

@@ -1,7 +1,6 @@
+import {Args, Flags} from '@oclif/core';
 import fs from 'node:fs';
 import path from 'node:path';
-
-import {Args, Flags} from '@oclif/core';
 
 import UpsunDocCommand from '../../base-command.js';
 import {globalExamples} from '../../config.js';
@@ -62,9 +61,7 @@ export default class CheckHeader extends UpsunDocCommand {
   static override args = {
     path: Args.string({default: config.app.folder, description: 'Path to check (default: contents/)'}),
   };
-
   static override description = 'Check headers (frontmatter) in Markdown/MDX files for validity and consistency';
-
   static override examples = [
     '<%= config.bin %> <%= command.id %>',
     '<%= config.bin %> <%= command.id %> contents/articles',
@@ -72,7 +69,6 @@ export default class CheckHeader extends UpsunDocCommand {
     '<%= config.bin %> <%= command.id %> --category articles',
     ...globalExamples,
   ];
-
   static override flags = {
     ...UpsunDocCommand.flags,
     category: Flags.string({
@@ -84,7 +80,6 @@ export default class CheckHeader extends UpsunDocCommand {
       description: 'Show detailed information for each file',
     }),
   };
-
   private logger!: Logger;
   private workspaceRoot!: string;
   private verbose = false;
@@ -162,7 +157,7 @@ export default class CheckHeader extends UpsunDocCommand {
     const frontmatter = frontmatterMatch[1];
     const metadata: Record<string, string> = {};
 
-    frontmatter.split('\n').forEach((line) => {
+    for (const line of frontmatter.split('\n')) {
       const colonIndex = line.indexOf(':');
       if (colonIndex > 0) {
         const key = line.slice(0, colonIndex).trim();
@@ -170,7 +165,7 @@ export default class CheckHeader extends UpsunDocCommand {
         value = value.replaceAll(/^["']|["']$/g, '');
         metadata[key] = value;
       }
-    });
+    }
 
     return metadata;
   }
@@ -178,7 +173,7 @@ export default class CheckHeader extends UpsunDocCommand {
   /**
    * Determine category for a file
    */
-  private getFileCategory(relativePath: string): {name: string; config: CategoryWithRegex} | null {
+  private getFileCategory(relativePath: string): {config: CategoryWithRegex; name: string} | null {
     for (const category of this.categories) {
       if (category.pathPattern.test(relativePath)) {
         return {config: category, name: category.name};

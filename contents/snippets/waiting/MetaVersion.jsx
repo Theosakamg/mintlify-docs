@@ -1,4 +1,4 @@
-const MetaVersion = ({language}) => {
+export const MetaVersion = ({language}) => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -22,5 +22,3 @@ const MetaVersion = ({language}) => {
     </p>
   );
 };
-
-export default MetaVersion;

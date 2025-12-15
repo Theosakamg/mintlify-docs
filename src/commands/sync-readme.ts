@@ -84,14 +84,14 @@ export default class SyncReadme extends UpsunDocCommand {
   private cleanMarkdownForMDX(content: string): string {
     return (
       content
-      // Remove HTML comments
-      .replaceAll(/<!--[\s\S]*?-->/g, '')
-      // Replace self-closing <br> tags with <br />
-      .replaceAll('<br>', '<br />')
-      // Replace <hr> tags with <hr />
-      .replaceAll('<hr>', '<hr />')
-      // Replace <img ...> tags with <img ... />
-      .replaceAll(/<img ([^>]+)>/g, '<img $1 />')
+        // Remove HTML comments
+        .replaceAll(/<!--[\s\S]*?-->/g, '')
+        // Replace self-closing <br> tags with <br />
+        .replaceAll('<br>', '<br />')
+        // Replace <hr> tags with <hr />
+        .replaceAll('<hr>', '<hr />')
+        // Replace <img ...> tags with <img ... />
+        .replaceAll(/<img ([^>]+)>/g, '<img $1 />')
     );
   }
 
@@ -138,8 +138,8 @@ export default class SyncReadme extends UpsunDocCommand {
       const result = await this.downloader.download(url, {isPrivate});
 
       // Clean content for MDX (if Markdown)
-      const content
-        = output.endsWith('.mdx') || output.endsWith('.md') ? this.cleanMarkdownForMDX(result.content) : result.content;
+      const content =
+        output.endsWith('.mdx') || output.endsWith('.md') ? this.cleanMarkdownForMDX(result.content) : result.content;
 
       // Ensure output directory exists
       const dir = path.dirname(outputPath);
@@ -198,7 +198,7 @@ export default class SyncReadme extends UpsunDocCommand {
     }
 
     // Check if GitHub token is set for private sources
-    const hasPrivateSources = sources.some(s => s.private);
+    const hasPrivateSources = sources.some((s) => s.private);
     if (hasPrivateSources && !config.github.token) {
       this.logger.warn('Some sources are private but GITHUB_TOKEN is not set', {
         hint: 'Set GITHUB_TOKEN environment variable or update config.yaml',
@@ -215,8 +215,8 @@ export default class SyncReadme extends UpsunDocCommand {
     }
 
     // Calculate summary
-    const successCount = results.filter(r => r.success).length;
-    const failedCount = results.filter(r => !r.success).length;
+    const successCount = results.filter((r) => r.success).length;
+    const failedCount = results.filter((r) => !r.success).length;
 
     const summary: SyncSummary = {
       failed: failedCount,
@@ -237,7 +237,7 @@ export default class SyncReadme extends UpsunDocCommand {
       this.logger.warn(`⚠️  ${failedCount} source(s) failed to download`);
 
       // Log failed sources
-      const failedResults = results.filter(r => !r.success);
+      const failedResults = results.filter((r) => !r.success);
       for (const result of failedResults) {
         this.logger.error(`  - ${result.url}: ${result.error}`);
       }

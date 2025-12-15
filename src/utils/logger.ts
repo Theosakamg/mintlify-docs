@@ -159,10 +159,10 @@ class Logger {
       // Pretty printing will be handled by the destination
       formatters: prettyPrint
         ? {
-          level: (label: string) => ({
-            levelEmoji: enableEmojis ? LEVEL_EMOJIS[label as LogLevel] || '' : '',
-          }),
-        }
+            level: (label: string) => ({
+              levelEmoji: enableEmojis ? LEVEL_EMOJIS[label as LogLevel] || '' : '',
+            }),
+          }
         : undefined,
     };
   }
@@ -356,6 +356,7 @@ class Logger {
         if (this.destination && typeof this.destination.flushSync === 'function') {
           this.destination.flushSync();
         }
+
         resolve();
       });
     });

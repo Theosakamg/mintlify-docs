@@ -7,7 +7,7 @@ import initHookApp from '../../hooks/init/app.js';
 import Logger from '../../utils/logger.js';
 
 const DEFAULT_LIMIT = 5;
-const EXCLUDED_FILES = ['latest.mdx', 'ai.mdx', 'discussions.mdx', 'howto.mdx', 'all.mdx'];
+const EXCLUDED_FILES = new Set(['ai.mdx', 'all.mdx', 'discussions.mdx', 'howto.mdx', 'latest.mdx']);
 const CONTENT_PATH = 'contents';
 const BASE_PATH = 'articles';
 
@@ -88,7 +88,7 @@ export default class BlogGenerate extends UpsunDocCommand {
     const frontmatter = frontmatterMatch[1];
     const metadata: Record<string, string> = {};
 
-    frontmatter.split('\n').forEach((line) => {
+    for (const line of frontmatter.split('\n')) {
       const colonIndex = line.indexOf(':');
       if (colonIndex > 0) {
         const key = line.slice(0, colonIndex).trim();
@@ -97,7 +97,7 @@ export default class BlogGenerate extends UpsunDocCommand {
         value = value.replaceAll(/^["']|["']$/g, '');
         metadata[key] = value;
       }
-    });
+    }
 
     return metadata;
   }
@@ -150,7 +150,7 @@ export default class BlogGenerate extends UpsunDocCommand {
       }
 
       // Skip excluded files
-      if (EXCLUDED_FILES.includes(file)) {
+      if (EXCLUDED_FILES.has(file)) {
         this.logger.debug(`Skipping excluded file: ${file}`);
         continue;
       }

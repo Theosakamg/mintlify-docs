@@ -46,9 +46,9 @@ interface LoggerConfig {
 ```typescript
 interface AppConfig {
   name: string;
-  version: string;  // Automatically read from package.json
+  version: string; // Automatically read from package.json
   environment: 'development' | 'production' | 'test';
-  folder: string;   // Base folder for content files
+  folder: string; // Base folder for content files
 }
 ```
 
@@ -56,7 +56,7 @@ interface AppConfig {
 
 ```typescript
 interface GithubConfig {
-  token: string;  // Supports ${GITHUB_TOKEN} from environment
+  token: string; // Supports ${GITHUB_TOKEN} from environment
 }
 ```
 
@@ -86,7 +86,7 @@ interface CheckConfig {
 
 interface CheckCategory {
   name: string;
-  pathPattern: string;  // Regex pattern as string
+  pathPattern: string; // Regex pattern as string
   requiredFields: string[];
   optionalFields: string[];
 }
@@ -100,10 +100,10 @@ interface CheckCategory {
 import config from './config/config.js';
 
 // Access configuration with full type safety
-const logLevel = config.logger.level;          // Type: 'trace' | 'debug' | ...
-const appName = config.app.name;               // Type: string
-const environment = config.app.environment;    // Type: 'development' | 'production' | 'test'
-const contentFolder = config.app.folder;       // Type: string
+const logLevel = config.logger.level; // Type: 'trace' | 'debug' | ...
+const appName = config.app.name; // Type: string
+const environment = config.app.environment; // Type: 'development' | 'production' | 'test'
+const contentFolder = config.app.folder; // Type: string
 
 // Access GitHub configuration
 const token = config.github.token;
@@ -284,7 +284,7 @@ export default class SyncReadme extends UpsunDocCommand {
 
 ### Example: Check Header Command
 
-```typescript
+````typescript
 import config from '../../config/config.js';
 
 export default class CheckHeader extends UpsunDocCommand {
@@ -373,4 +373,4 @@ async function initializeApp() {
 
   return config;
 }
-```
+````
