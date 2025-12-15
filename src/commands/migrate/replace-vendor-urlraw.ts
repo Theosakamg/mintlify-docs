@@ -16,8 +16,7 @@ interface ReplacementSummary {
 }
 
 export default class ReplaceVendorUrlraw extends UpsunDocCommand {
-  static override description =
-    'Replace Hugo shortcodes {{< vendor/urlraw >}} with Mintlify ConfigValue component';
+  static override description = 'Replace Hugo shortcodes {{< vendor/urlraw >}} with Mintlify ConfigValue component';
   static override examples = ['<%= config.bin %> <%= command.id %>', ...globalExamples];
   private logger!: Logger;
   private workspaceRoot!: string;
@@ -119,8 +118,7 @@ export default class ReplaceVendorUrlraw extends UpsunDocCommand {
         );
 
         // Count replacements
-        const matches = (content.match(/\{\{<\s*vendor\/urlraw\s+"discord"\s*>\}\}/g) || [])
-          .length;
+        const matches = (content.match(/\{\{<\s*vendor\/urlraw\s+"discord"\s*>\}\}/g) || []).length;
         summary.totalReplacements += matches;
         summary.processedFiles++;
 

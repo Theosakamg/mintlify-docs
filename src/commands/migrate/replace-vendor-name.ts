@@ -16,8 +16,7 @@ interface ReplacementSummary {
 }
 
 export default class ReplaceVendorName extends UpsunDocCommand {
-  static override description =
-    'Replace Hugo shortcodes {{% vendor/name %}} with Mintlify ConfigValue component';
+  static override description = 'Replace Hugo shortcodes {{% vendor/name %}} with Mintlify ConfigValue component';
   static override examples = ['<%= config.bin %> <%= command.id %>', ...globalExamples];
   private logger!: Logger;
   private workspaceRoot!: string;
@@ -112,10 +111,7 @@ export default class ReplaceVendorName extends UpsunDocCommand {
         this.logger.info(`Processing: ${relativePath}`);
 
         // Replace the shortcode with ConfigValue component
-        const newContent = content.replaceAll(
-          /\{\{%\s*vendor\/name\s*%\}\}/g,
-          '<ConfigValue key="vendorName" />',
-        );
+        const newContent = content.replaceAll(/\{\{%\s*vendor\/name\s*%\}\}/g, '<ConfigValue key="vendorName" />');
 
         // Count replacements
         const matches = (content.match(/\{\{%\s*vendor\/name\s*%\}\}/g) || []).length;
