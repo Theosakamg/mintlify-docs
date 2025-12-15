@@ -4,7 +4,6 @@ import path from 'node:path';
 import UpsunDocCommand from '../base-command.js';
 import {globalExamples} from '../config.js';
 import config from '../config/config.js';
-import initHookApp from '../hooks/init/app.js';
 import DownloadGithub from '../utils/download-github.js';
 import Logger from '../utils/logger.js';
 
@@ -34,21 +33,6 @@ export default class SyncReadme extends UpsunDocCommand {
   private logger!: Logger;
   private downloader!: DownloadGithub;
   private workspaceRoot!: string;
-
-  /**
-   * Initialize command - called before run()
-   */
-  public async init(): Promise<void> {
-    await super.init();
-
-    // Call the init hook manually with all required properties
-    await initHookApp.call(this as any, {
-      id: this.id,
-      config: this.config,
-      argv: this.argv,
-      context: this as any,
-    });
-  }
 
   public async run(): Promise<void> {
     await this.parse(SyncReadme);
@@ -127,7 +111,7 @@ export default class SyncReadme extends UpsunDocCommand {
   /**
    * Sync a single source
    */
-  private async syncSource(url: string, output: string, isPrivate: boolean): Promise<SyncResult> {
+  private async syncOne(url: string, output: string, isPrivate: boolean): Promise<SyncResult> {
     const cacheDir = path.join(this.workspaceRoot, config.sync.cacheDir);
     const outputPath = path.join(cacheDir, output);
 
@@ -210,7 +194,7 @@ export default class SyncReadme extends UpsunDocCommand {
     // Sync all sources
     const results: SyncResult[] = [];
     for (const source of sources) {
-      const result = await this.syncSource(source.url, source.output, source.private);
+      const result = await this.syncOne(source.url, source.output, source.private);
       results.push(result);
     }
 

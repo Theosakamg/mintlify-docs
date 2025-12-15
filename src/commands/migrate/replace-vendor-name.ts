@@ -21,21 +21,6 @@ export default class ReplaceVendorName extends UpsunDocCommand {
   private logger!: Logger;
   private workspaceRoot!: string;
 
-  /**
-   * Initialize command - called before run()
-   */
-  public async init(): Promise<void> {
-    await super.init();
-
-    // Call the init hook manually with all required properties
-    await initHookApp.call(this as any, {
-      argv: this.argv,
-      config: this.config,
-      context: this as any,
-      id: this.id,
-    });
-  }
-
   public async run(): Promise<void> {
     await this.parse(ReplaceVendorName);
 

@@ -87,20 +87,6 @@ export default class CheckHeader extends UpsunDocCommand {
   private validHeaderFields!: Set<string>;
   private categories!: CategoryWithRegex[];
 
-  /**
-   * Initialize command - called before run()
-   */
-  public async init(): Promise<void> {
-    await super.init();
-
-    await initHookApp.call(this as any, {
-      argv: this.argv,
-      config: this.config,
-      context: this as any,
-      id: this.id,
-    });
-  }
-
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(CheckHeader);
 

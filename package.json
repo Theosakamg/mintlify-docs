@@ -35,7 +35,7 @@
     "publish": "cd contents && mint publish --env-file ../.env",
     "migrate:vendor-name": "node scripts/replace-vendor-name.js",
     "migrate:vendor-urlraw": "node scripts/replace-vendor-urlraw.js",
-    "app:all": "  npm run build && npm run cache:all && npm run check:all"
+    "app:all": "npm run lint:fix && npm run format:fix && npm run build && npm run cache:all && npm run check:all"
   },
   "repository": {
     "type": "git",
