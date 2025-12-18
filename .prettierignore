@@ -1,0 +1,41 @@
+# Configuration files
+.editorconfig
+
+# Dependencies
+node_modules
+package-lock.json
+
+# Build outputs
+dist
+build
+*.tsbuildinfo
+
+# Cache directories
+.cache
+tmp
+.mintlify
+
+# Generated files
+contents/snippets/.cache
+
+# Lock files
+pnpm-lock.yaml
+yarn.lock
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.*
+
+# IDE
+.vscode
+.idea
+
+# OS
+.DS_Store
+Thumbs.db
+
+bin
+openapi.*

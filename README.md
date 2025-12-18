@@ -28,6 +28,37 @@ npm run start
 
 View your local preview at `http://localhost:3000`.
 
+## Configuration
+
+The project uses a YAML-based configuration system with TypeScript support. Configuration is defined in `config.yaml`:
+
+```yaml
+app:
+  name: upsun-docs
+  environment: development
+  folder: contents # Base folder for content files
+
+logger:
+  level: info
+  prettyPrint: true
+  enableEmojis: false
+
+github:
+  token: ${GITHUB_TOKEN} # Set via environment variable
+
+sync:
+  cacheDir: contents/snippets/.cache
+  sources: [...]
+```
+
+**Environment Variables**: Create a `.env` file for local development:
+
+```env
+GITHUB_TOKEN=your_github_token_here
+```
+
+For more details, see the [Configuration Documentation](docs/config/config-manager.md).
+
 ## Publishing changes
 
 Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
@@ -40,4 +71,5 @@ Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/sett
 - If a page loads as a 404: Make sure you are running in a folder with a valid `docs/docs.json`.
 
 ### Resources
+
 - [Mintlify documentation](https://mintlify.com/docs)

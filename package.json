@@ -7,27 +7,47 @@
     "doc": "dev/docs"
   },
   "scripts": {
+    "config:generate": "node ./bin/run.js config:generate",
+    "dev": "npm run config:generate && cd contents && mint dev --verbose --env-file ../.env",
+    "build:ts": "tsc",
+    "build:clean": "rm -rf dist",
+    "build": "npm run build:clean && npm run build:ts",
+    "type-check": "tsc --noEmit",
     "install-dev": "npm i -g mint && ./scripts/install-dev.sh",
     "install:update": "mint update",
-    "cache:generate": "node scripts/sync-readme.js",
-    "cache:clear": "rm -rf contents/snippets/.cache/*",
-    "cache:check:mdx": "node scripts/check-mdx.js contents/snippets/.cache",
-    "cache:all": "npm run cache:clear && npm run cache:generate && npm run cache:check:mdx",
-    "start": "npm run cache:generate && cd contents && mint dev --verbose --env-file ../.env",
-    "build": "npm run cache:generate && echo TODO",
-    "lint": "echo TODO",
-    "lint:fix": "echo TODO",
-    "format": "echo TODO",
-    "format:fix": "echo TODO",
+    "install:autocomplete": "node ./bin/run.js autocomplete:script",
+    "cache:generate": "node ./bin/run.js sync-readme",
+    "cache:clear": "node ./bin/run.js clean",
+    "cache:check:mdx": "node ./bin/run.js check:mdx contents/snippets/.cache",
+    "cache:articles": "node ./bin/run.js blog:generate",
+    "cache:all": "npm run cache:clear && npm run config:generate && npm run cache:generate && npm run cache:articles && npm run cache:check:mdx",
+    "start": "npm run config:generate && npm run cache:generate && npm run cache:articles && cd contents && mint dev --verbose --env-file ../.env",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
     "check:broken-links": "cd contents && mint broken-links",
     "check:a11y": "cd contents && mint a11y",
-    "check:mdx": "node scripts/check-mdx.js contents",
+    "check:header": "node ./bin/run.js check:header",
+    "check:header:verbose": "node ./bin/run.js check:header --verbose",
+    "check:mdx": "node ./bin/run.js check:mdx contents",
     "check:openapi": "cd contents && mint openapi-check openapi.json",
-    "check:all": "npm run check:mdx ; npm run check:openapi ; cd contents && npm run check:broken-links ; npm run check:a11y",
+    "check:all": "npm run check:mdx ; npm run check:header ; npm run check:openapi ; cd contents && npm run check:broken-links ; npm run check:a11y",
     "publish": "cd contents && mint publish --env-file ../.env",
-    "migrate:vendor-name": "node scripts/replace-vendor-name.js",
-    "migrate:vendor-urlraw": "node scripts/replace-vendor-urlraw.js",
-    "all": "npm run install:update && npm run cache:all && npm run check:all && npm run start"
+    "migrate:page-layout": "node ./bin/run.js migrate:replace-page-layout",
+    "migrate:vendor-name": "node ./bin/run.js migrate:replace-vendor-name",
+    "migrate:configfile": "node ./bin/run.js migrate:replace-configfile",
+    "migrate:latest": "node ./bin/run.js migrate:replace-latest",
+    "migrate:variable": "node ./bin/run.js migrate:replace-variable",
+    "migrate:note": "node ./bin/run.js migrate:replace-note",
+    "migrate:codetabs": "node ./bin/run.js migrate:replace-codetabs",
+    "migrate:vendor-cli": "node ./bin/run.js migrate:replace-vendor-cli",
+    "migrate:vendor-urlraw": "node ./bin/run.js migrate:replace-vendor-urlraw",
+    "migrate:supported-services": "node ./bin/run.js migrate:replace-supported-services",
+    "migrate:html-comments": "node ./bin/run.js migrate:replace-html-comments",
+    "migrate:remove-separator": "node ./bin/run.js migrate:remove-codetabs-separator",
+    "migrate:all": "npm run migrate:vendor-name && npm run migrate:configfile && npm run migrate:latest && npm run migrate:variable && npm run migrate:note && npm run migrate:codetabs && npm run migrate:vendor-cli && npm run migrate:vendor-urlraw && npm run migrate:supported-services && npm run migrate:html-comments && npm run migrate:remove-separator",
+    "app:all": "npm run lint:fix && npm run format:fix && npm run build && npm run cache:all && npm run check:all"
   },
   "repository": {
     "type": "git",
@@ -41,8 +61,39 @@
   },
   "homepage": "https://github.com/Theosakamg/mintlify-docs#readme",
   "devDependencies": {
+    "@eslint/compat": "^1.2.4",
     "@mdx-js/mdx": "^3.1.1",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^25.0.1",
     "dotenv": "^17.2.3",
-    "mdx": "^0.3.1"
+    "eslint": "^9.17.0",
+    "eslint-config-oclif": "^6.0.2",
+    "eslint-config-prettier": "^9.1.0",
+    "mdx": "^0.3.1",
+    "prettier": "^3.4.2",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@oclif/core": "^4.8.0",
+    "@oclif/plugin-autocomplete": "^3.2.39",
+    "@oclif/prettier-config": "^0.2.1",
+    "js-yaml": "^4.1.1",
+    "pino": "^10.1.0",
+    "pino-pretty": "^13.1.3"
+  },
+  "bin": {
+    "upsun-docs": "./bin/run.js"
+  },
+  "oclif": {
+    "bin": "upsun-docs",
+    "commands": "./dist/commands",
+    "hooks": "./dist/hooks",
+    "dirname": "upsun-docs",
+    "topicSeparator": ":",
+    "plugins": [
+      "@oclif/plugin-autocomplete"
+    ]
   }
 }
