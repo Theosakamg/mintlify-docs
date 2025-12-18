@@ -5,7 +5,6 @@ import path from 'node:path';
 
 import UpsunDocCommand from '../../base-command.js';
 import {globalExamples} from '../../config.js';
-import initHookApp from '../../hooks/init/app.js';
 import Logger from '../../utils/logger.js';
 
 /**

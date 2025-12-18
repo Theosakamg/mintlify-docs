@@ -1,0 +1,109 @@
+---
+title: Add services
+weight: -205
+description: See how to add services such as databases, cache, and search engines and configure them to suit your needs.
+keywords:
+  - services
+---
+
+{/* Import section */}
+import config from '/snippets/.cache/config.jsx';
+import { MetaVersion, MetaVersionList } from '/snippets/waiting/MetaVersion.jsx';
+import ProviderName from '/snippets/common/ProviderName.jsx';
+
+## Common Component
+
+### Comment MDX
+````mdx  theme={null}
+{/* This is a MDX comment*/}
+````
+<Expandable title="Show Result">
+  {/* This is a MDX comment*/}
+</Expandable>
+
+### Config entry
+
+Codeblock call (Only value):  
+````mdx  theme={null} (source /contents/snippets/config.jsx)
+{config.vendorName}
+````
+<Expandable title="Show Result">
+  {config.vendorName}
+</Expandable>
+
+Component call (with common design):  
+````mdx  theme={null} (source /contents/snippets/common/ProviderName.jsx)
+<ProviderName />  
+````
+<Expandable title="Show Result">
+  <ProviderName />  
+</Expandable>
+
+## Dynamic Component/Data
+
+### Version of Runtime/Service
+
+#### Get one Dynamically
+````mdx  theme={null}
+{/* This is a MDX comment*/}
+<MetaVersion language="php" version="latest" />
+````
+<Expandable title="Show Result">
+  <MetaVersion language="php" version="latest" />
+</Expandable>
+
+#### Get one not dynamiclly
+<Danger>Do not use with react dynamical !!!</Danger>
+````mdx  theme={null}
+{MetaVersion("php","latest")}
+````
+<Expandable title="Show Result">
+  {MetaVersion("php","latest")}
+</Expandable>
+
+
+#### Get all version
+
+````mdx  theme={null}
+<MetaVersionList language="php" />
+````
+<Expandable title="Show Result">
+  <MetaVersionList language="php" />
+</Expandable>
+
+#### Supported/deprecated/retired versions
+* Supported versions:
+  ````mdx  theme={null}
+    <MetaVersionList language="php" status="supported" />
+  ````
+  <Expandable title="Show Result">
+    <MetaVersionList language="php" status="supported" />
+  </Expandable>
+
+* Deprecated versions:
+  ````mdx  theme={null}
+    <MetaVersionList language="php" status="deprecated" />
+  ````
+  <Expandable title="Show Result">
+    <MetaVersionList language="php" status="deprecated" />
+  </Expandable>
+
+* Retired versions:
+  ````mdx  theme={null}
+    <MetaVersionList language="php" status="retired" />
+  ````
+  <Expandable title="Show Result">
+    <MetaVersionList language="php" status="retired" />
+  </Expandable>
+
+
+
+
+# test
+
+<ProviderName /> includes many services, so you don't have to subscribe to external cache or search engine services.
+Because the services are included in your project, you can manage them through Git
+and they're backed up together with the rest of your project.
+
+Your project defines the services configuration from a top-level key called `services`, which is placed in a unified configuration file like <code>{config.configFiles.services}</code>.
+If you don't need any services (such as for a static website), you don't need to include this configuration. Read on to see how to add services.

@@ -1,148 +1,56 @@
-import fs from 'node:fs';
-import path from 'node:path';
-
-import UpsunDocCommand from '../../base-command.js';
 import {globalExamples} from '../../config.js';
-import initHookApp from '../../hooks/init/app.js';
-import Logger from '../../utils/logger.js';
+import {BaseMigrateCommand, type FileProcessingResult, type FrontmatterData} from '../../base-migrate-command.js';
 
-/**
- * Replacement summary
- */
-interface ReplacementSummary {
-  processedFiles: number;
-  totalReplacements: number;
-  errors: string[];
-}
-
-export default class ReplaceVendorName extends UpsunDocCommand {
-  static override description = 'Replace Hugo shortcodes {{% vendor/name %}} with Mintlify ConfigValue component';
+export default class ReplaceVendorName extends BaseMigrateCommand {
+  static override description = 'Replace Hugo shortcodes {{% vendor/name %}} with config property';
   static override examples = ['<%= config.bin %> <%= command.id %>', ...globalExamples];
-  private logger!: Logger;
-  private workspaceRoot!: string;
+  static override flags = {
+    ...BaseMigrateCommand.baseFlags,
+  };
 
-  public async run(): Promise<void> {
-    await this.parse(ReplaceVendorName);
-
-    try {
-      // Initialize logger and workspace root
-      this.logger = new Logger('migrate:replace-vendor-name');
-      this.workspaceRoot = process.cwd();
-
-      this.logger.info('Starting replacement of {{% vendor/name %}} with ConfigValue component');
-
-      // Execute replacement
-      const summary = await this.processFiles();
-
-      // Display summary
-      this.displaySummary(summary);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      this.error(`Replacement operation failed: ${message}`, {exit: 1});
-    } finally {
-      // Ensure logger is flushed before exit
-      if (this.logger) {
-        await this.logger.flush();
-      }
-    }
+  protected getLoggerName(): string {
+    return 'migrate:replace-vendor-name';
   }
 
-  /**
-   * Get all .md and .mdx files recursively
-   */
-  private getAllFiles(dirPath: string, arrayOfFiles: string[] = []): string[] {
-    try {
-      const files = fs.readdirSync(dirPath);
-
-      for (const file of files) {
-        const filePath = path.join(dirPath, file);
-        if (fs.statSync(filePath).isDirectory()) {
-          this.getAllFiles(filePath, arrayOfFiles);
-        } else if (file.endsWith('.md') || file.endsWith('.mdx')) {
-          arrayOfFiles.push(filePath);
-        }
-      }
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      this.logger.warn(`Error reading directory ${dirPath}: ${message}`);
-    }
-
-    return arrayOfFiles;
+  protected getMigrationDescription(): string {
+    return 'Starting replacement of {{% vendor/name %}} with config property';
   }
 
-  /**
-   * Process all files and replace patterns
-   */
-  private async processFiles(): Promise<ReplacementSummary> {
-    const summary: ReplacementSummary = {
-      errors: [],
-      processedFiles: 0,
-      totalReplacements: 0,
+  protected getSummaryLabel(): string {
+    return 'Vendor Name Replacement Summary';
+  }
+
+  protected processFile(
+    filePath: string,
+    content: string,
+    _frontmatter: FrontmatterData,
+  ): FileProcessingResult {
+    // Check if file contains the pattern
+    const pattern = /\{\{%\s*vendor\/name\s*%\}\}/g;
+    if (!pattern.test(content)) {
+      return {modified: false};
+    }
+
+    // Count matches before replacement
+    const matches = (content.match(/\{\{%\s*vendor\/name\s*%\}\}/g) || []).length;
+
+    // Replace the shortcode with ConfigValue component
+    let newContent = content.replaceAll(/\{\{%\s*vendor\/name\s*%\}\}/g, '<ConfigValue keyPath="vendorName" />');
+    
+    // Add import if needed
+    newContent = this.addImportIfNeeded(newContent, ['ConfigValue']);
+
+    const fileName = filePath.split('/').pop() || filePath;
+
+    return {
+      details: {
+        'Pattern': '{{% vendor/name %}}',
+        'Replaced with': '<ConfigValue keyPath="vendorName" />',
+        'Occurrences': matches.toString(),
+      },
+      message: `Replaced ${matches} occurrence(s) in ${fileName}`,
+      modified: true,
+      newContent,
     };
-
-    const docsPath = path.join(this.workspaceRoot, 'tmp', 'docs');
-    const files = this.getAllFiles(docsPath);
-
-    for (const file of files) {
-      try {
-        const content = fs.readFileSync(file, 'utf8');
-
-        // Check if file contains the pattern
-        if (!content.includes('{{% vendor/name %}}')) {
-          continue;
-        }
-
-        const relativePath = path.relative(this.workspaceRoot, file);
-        this.logger.info(`Processing: ${relativePath}`);
-
-        // Replace the shortcode with ConfigValue component
-        const newContent = content.replaceAll(/\{\{%\s*vendor\/name\s*%\}\}/g, '<ConfigValue key="vendorName" />');
-
-        // Count replacements
-        const matches = (content.match(/\{\{%\s*vendor\/name\s*%\}\}/g) || []).length;
-        summary.totalReplacements += matches;
-        summary.processedFiles++;
-
-        // Write the file back
-        fs.writeFileSync(file, newContent, 'utf8');
-
-        this.logger.success(`Replaced ${matches} occurrence(s) in ${path.basename(file)}`);
-      } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        const relativePath = path.relative(this.workspaceRoot, file);
-        const errorMsg = `Failed to process ${relativePath}: ${message}`;
-        summary.errors.push(errorMsg);
-        this.logger.error(errorMsg);
-      }
-    }
-
-    return summary;
-  }
-
-  /**
-   * Display replacement summary
-   */
-  private displaySummary(summary: ReplacementSummary): void {
-    this.logger.info('='.repeat(60));
-    this.logger.info('🔄 Replacement Summary:');
-    this.logger.info(`   Files processed: ${summary.processedFiles}`);
-    this.logger.info(`   Total replacements: ${summary.totalReplacements}`);
-
-    if (summary.errors.length > 0) {
-      this.logger.info(`   Errors: ${summary.errors.length}`);
-    }
-
-    this.logger.info('='.repeat(60));
-
-    if (summary.errors.length > 0) {
-      this.logger.error('❌ Some errors occurred during replacement:');
-      for (const [index, error] of summary.errors.entries()) {
-        this.logger.error(`${index + 1}. ${error}`);
-      }
-    } else if (summary.processedFiles === 0) {
-      this.logger.warn('✅ No files found matching the pattern');
-    } else {
-      this.logger.success('Replacement completed successfully!');
-    }
   }
 }
