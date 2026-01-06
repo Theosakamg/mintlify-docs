@@ -43,6 +43,10 @@ export const MetaVersionList = ({language, status}) => {
 
   if (!data) return <p>Loading...</p>;
 
+  if (!data.versions || data.versions.length === 0) {
+    return <p>No versions found! Contact support.</p>;
+  }
+
   // Filter versions by status if provided
   const versions = status
     ? data.versions.filter(v => v.status === status)
@@ -52,7 +56,7 @@ export const MetaVersionList = ({language, status}) => {
     <ul>
       {versions.map((version) => (
         <li key={version.name} className="image-version">
-          {version.name}
+          {version.name} {version.status === 'beta' && <Badge icon="badge-alert" color="orange" shape="rounded">Beta</Badge>}
         </li>
       ))}
     </ul>

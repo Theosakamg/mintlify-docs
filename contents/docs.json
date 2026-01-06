@@ -60,6 +60,13 @@
         ]
       },
       {
+        "tab": "Docs",
+        "icon": "square-terminal",
+        "pages": [
+          "docs/sample"
+        ]
+      },
+      {
         "tab": "CLI",
         "icon": "square-terminal",
         "groups": [
